@@ -12,17 +12,17 @@
 #' returns 1
 #' @example decision(0, 100, sp_matrix = dat_mcListFit$estimate[[1]][], cv = c(20,50,10,20), cherry = 7500)
 #' returns 0
+#' 
 
-decision <- function(p, cost_s, cherry, sp_matrix, cv){
+decision <- function(p, cost_s, cherry, nsp_matrix, cv){
   # Determine whether to spray/not spray
   # If damage > cost to spray then spray
   # If cost > damage then choose not to spray
-  spray <- cv %*% sp_matrix
+  spray <- cv %*% nsp_matrix
   spray_growth <- spray[4] - cv[4]
   sp_damage <- spray_growth * cherry * p
   
   # Get decision : 1 (spray), 0 (no spray)
-  decision <- ifelse(sp_damage >= cost_s, 1, 0)
-  return(decision)
+  dec <- ifelse(sp_damage >= cost_s, 1, 0)
+  return(dec)
 }
-

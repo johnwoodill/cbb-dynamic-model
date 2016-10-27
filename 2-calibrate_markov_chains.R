@@ -1,10 +1,6 @@
-# Model parameters
-p <- 2            # Price
-cost_s <- 180    # Cost to spray
-cost_h <- .5     # Cost to harvest per pound of cherry
-cv <- c(.90, 0.08, 0.01, .01)
-harvest <- c(0, 0, 0, 0, 0, 0, 0, 0, 0.32, 0.48, 0.12, 0.08)
-
+#' 2-calibrate_markov_chains
+#' 
+#' 
 # Load function for time-inhomogenous Markov chain estimation
 source("R/markovcalibration.R")
 
@@ -30,20 +26,6 @@ nsp_mat$A <- apply(nsp_mat, 1, function(x) 100 - sum(x))                        
 nsp_mcListFit <- markovcalibration(nsp_mat)
 # ------------------------------------------------------
 
-# Load net benefit optimization function
-source("R/maxnb.R")
-
-totalnb <- data.frame()
-
-for (i in 1:12){
-      nb <- maxnb(p = 2, 
-      cost_s = cost_s, 
-      cost_h = cost_h, 
-      cherry = 7500, 
-      h = harvest[i], 
-      sp_matrix = sp_mcListFit$estimate[[i]][], 
-      nsp_matrix = nsp_mcListFit$estimate[[i]][], 
-      cv = cv)
-      totalnb <- rbind(totalnb, nb)
-}
-print(totalnb)  
+rm(sp_mat)
+rm(nsp_mat)
+rm(markovcalibration)
