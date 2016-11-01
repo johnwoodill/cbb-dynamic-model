@@ -1,4 +1,4 @@
-
+#' 
 rm(list=ls())
 
 # Load net benefit optimization function
@@ -6,6 +6,9 @@ source("R/maxnb.R")
 
 # Load decision function
 source("R/decision.R")
+
+# Dynamic cherry pricing function
+source("R/cherrypricing.R")
 
 # Initiate parameters
 source("1-parameters.R")
@@ -26,8 +29,11 @@ for (i in 1:12){
   # C/D damage
   d <- new_cv[4] - cv[4]
   
+  # Dynamic cherry pricing
+  p <- cherrypricing(new_cv[4])
+  
   # Optimize Net Benefit (NB)
-  nb <- maxnb(p = 2, 
+  nb <- maxnb(p = p, 
   cost_s = cost_s, 
   cost_h = cost_h, 
   cherry = 7500, 
@@ -43,3 +49,4 @@ for (i in 1:12){
 }
 
 print(totalnb)  
+plot(totalnb$cd)
