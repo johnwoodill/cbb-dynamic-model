@@ -7,6 +7,8 @@ cost_h <- .5     # Cost to harvest per pound of cherry
 cv <- c(.90, 0.08, 0.01, .01)
 harvest <- c(0, 0, 0, 0, 0, 0, 0, 0, 0.32, 0.48, 0.12, 0.08)
 cherry <- 7500
+acres <- 2
+cherry_per_acre <- 7500
 
 # Total Net Benefit data.frame
 totalnb <- data.frame()

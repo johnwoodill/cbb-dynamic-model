@@ -1,10 +1,10 @@
 #' 
 rm(list=ls())
 
-# Load net benefit optimization function
+# Net benefit optimization function
 source("R/maxnb.R")
 
-# Load decision function
+# Decision function
 source("R/decision.R")
 
 # Dynamic cherry pricing function
@@ -16,14 +16,19 @@ source("1-parameters.R")
 # Get calibrated markov chains
 source("2-calibrate_markov_chains.R")
 
+# Ripe cherry growth 
+source("R/cherrygrowth.R")
+cherry <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 6, r = .8)
+
 #---------------------------------------
 # Dynamic optimization problem
 
 for (i in 1:12){
-  # Get decision and infestation values
+  
+  # Calculate decision and infestation values
   choice <- decision(p, cost_s, cherry, nsp_mcListFit$estimate[[i]][], cv)
   
-  # Get new current infestation values
+  # Get new current infestation values based on spray decision
   new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])
   
   # C/D damage
@@ -48,5 +53,8 @@ for (i in 1:12){
   cv <- new_cv
 }
 
+library(ggplot2)
+library(directlabels)
 print(totalnb)  
-plot(totalnb$cd)
+ggplot(totalnb, aes(month, cd)) + geom_line()
+sum(totalnb$nb)

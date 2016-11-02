@@ -38,7 +38,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, cv, d){
   nb <- p * (h*cherry) * (1 - d) - cost_s*choice - cost_h*(h*cherry) 
   
   # Return maximized net benefit
-  dat <- data.frame(spray = choice, ni = cv[1], ab_live = cv[2], ab_dead = cv[3], cd = cv[4], price = p, damage = d*cherry*p, cost = cost_s, harvest = h, nb = nb)
+  dat <- data.frame(month = i, spray = choice, ni = cv[1], ab_live = cv[2], ab_dead = cv[3], cd = cv[4], price = p, damage = d*cherry*p, cost = cost_s, harvest = h, nb = nb)
   return(dat)
 }
 
