@@ -60,4 +60,5 @@ for (i in 1:12){
   harvestedcherry <- sum(totalnb$harvest_c)
 }
 
-round(totalnb, 2)
+totalnb <- round(totalnb, 2)
+saveRDS(totalnb, "data/totalnb.rds")

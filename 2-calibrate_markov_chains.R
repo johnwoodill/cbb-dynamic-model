@@ -9,7 +9,7 @@ source("R/markovcalibration.R")
 sp_mat <- data.frame(A = c(rep(0, 13)),                                       # Not Infested
                   B = c(40 ,37, 35 ,30, 27, 21, 15, 16, 21, 19, 17, 15, 14),  # A/B Live
                   C = c(10, 15, 20, 23, 30, 34, 34, 37, 40, 41, 43, 44, 43),  # A/B Dead
-                  D = c(1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15))         # C/D Position
+                  D = c(0, 1, 2, 3, 3, 4, 4, 5, 5, 6, 7, 7, 8))         # C/D Position
 
 sp_mat$A <- apply(sp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
 
@@ -26,6 +26,4 @@ nsp_mat$A <- apply(nsp_mat, 1, function(x) 100 - sum(x))                        
 nsp_mcListFit <- markovcalibration(nsp_mat)
 # ------------------------------------------------------
 
-rm(sp_mat)
-rm(nsp_mat)
-rm(markovcalibration)
+
