@@ -1,0 +1,10 @@
+ToDo
+---------------
+* likelihood of cbb attacking after rain
+
+
+
+Complete
+---------------
+* Fix pricing in decision function
+* Cherry growth and harvesting
