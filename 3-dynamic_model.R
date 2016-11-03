@@ -16,17 +16,22 @@ source("1-parameters.R")
 # Get calibrated markov chains
 source("2-calibrate_markov_chains.R")
 
-# Ripe cherry growth 
+# Cherry growth 
 source("R/cherrygrowth.R")
-cherry <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 6, r = .8)
+cherryonfarm <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 1, r = .3)
+
+plot(cherryonfarm) 
 
 #---------------------------------------
 # Dynamic optimization problem
 
 for (i in 1:12){
   
+  # Dynamic cherry pricing
+  p <- cherrypricing(cv[4])
+  
   # Calculate decision and infestation values
-  choice <- decision(p, cost_s, cherry, nsp_mcListFit$estimate[[i]][], cv)
+  choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
   
   # Get new current infestation values based on spray decision
   new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])
@@ -34,15 +39,16 @@ for (i in 1:12){
   # C/D damage
   d <- new_cv[4] - cv[4]
   
-  # Dynamic cherry pricing
+  # Update dynamic cherry pricing
   p <- cherrypricing(new_cv[4])
   
   # Optimize Net Benefit (NB)
   nb <- maxnb(p = p, 
   cost_s = cost_s, 
   cost_h = cost_h, 
-  cherry = 7500, 
-  h = harvest[i], 
+  cherry = cherryonfarm[i], 
+  h = harvestschedule[i], 
+  harvestedcherry =  harvestedcherry,
   cv = new_cv,
   d = d)
   
@@ -51,10 +57,7 @@ for (i in 1:12){
   
   # New infestation levels for next period
   cv <- new_cv
+  harvestedcherry <- sum(totalnb$harvest_c)
 }
 
-library(ggplot2)
-library(directlabels)
-print(totalnb)  
-ggplot(totalnb, aes(month, cd)) + geom_line()
-sum(totalnb$nb)
+round(totalnb, 2)
