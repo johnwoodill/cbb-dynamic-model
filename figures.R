@@ -74,4 +74,11 @@ ggplot2::ggsave("figures/inf_p.png", plot = inf_p, device = "png")
 ggplot2::ggsave("figures/nb_p.png", plot = nb_p, device = "png")
 ggplot2::ggsave("figures/cherryonfarm.png", plot = cherryonfarm_p, device = "png")
 
+
+# Dynamic Cherry pricing table
+dcp <- data.frame(infestation_level = seq(0,1,.01))
+dcp$price <- apply(dcp, 1, cherrypricing)
+dcp <- dcp[!duplicated(dcp$price),]
+saveRDS(dcp, "data/dynamiccherrypricing.rds")
+
 #plot_grid(plot1, plot2, plot3, plot4, ncol = 2)

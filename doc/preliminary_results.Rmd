@@ -1,0 +1,97 @@
+---
+title: "Dynamic CBB Model - Preliminary Results"
+output: pdf_document
+---
+
+
+
+## Introduction
+
+The following document outlines the forward recurvise dynamic model and results.  New additions to the modeling technique include dynamic cherry pricing, green cherry growth, cbb infestation levels and positions using Markov processes, and optimized harvesting strategy.  Formally, the objective is to maximize the net benefit $NB$ in each period and is defined as:
+
+\begin{equation}
+\max_{h,s} NB = \sum_{t=1}^{12} [P_t H_t D_t - c_s S_t - c_h H_t]
+\end{equation}
+
+$$ \text{s.t.} \hspace{3mm} S_t = \{0,1\}$$
+$$H_t \leq \zeta_t $$
+$$\zeta_t = \zeta_{t-1} - H_{t-1}$$ 
+$$D_t = V_{CDt} = V_{it-1} \cdot [S_t \cdot SP_t] + V_{it-1} \cdot [(1-S_t) \cdot NSP_t]$$
+
+where $P_t$ is the dynamic cherry pricing based on infestation of C/D position, $H_t$ is the amount of cherry available to harvest, $D_t$ is the economic damage based on the level of C/D position, $c_s$ is the cost to spray, $S_t$ is the choice to spray or not, $c_h$ is the cost per pound of cherry harvested, $\zeta_t$ is the proportion of cherry ripe and ready to harvest, $SP_t$ is the Markov matrix when choosing to spray, and $NSP_t$ is the Markov matrix when choosing to not spray.
+
+Dynamically, the value function $V_t$ is defined as the $NB$ from equation 1,
+
+\begin{equation}
+\max_{h_t, s_t} V_t(H_t, D_t, C_t) + V_{t-1} (H_{t-1}, D_{t-1}, C_{t-1}) 
+\end{equation}
+
+Using a forward-recursive dynamic programming the model is run under calibrated parameter estimates defined below.
+
+##Initial parameter estimates
+
+The follow are baseline parameters set in the beginning and do not change throughout the dynamic model.
+
+Acres = $2$
+
+Projected cherry per acre = $7500$
+
+Cost to spray = $\$ 180.00$
+
+Cost to harvest = $\$ 0.50$
+
+Projected cherry per acre = $\$ 7500$
+
+Harvest schedule : Sept, Oct, Nov, Dec
+
+Initial infestation levels : Not infested = 90%, AB Live = 8%, AB Dead = 1%, CD = 1%
+
+##Dynamic Cherry Pricing
+
+Dynamic cherry pricing is incorporated into the model based on the level of infestation in the current period.  Further, the choice to spray or not is dependent the increase in C/D infestation and the related dynamic pricing.  The following numbers are the newest pricing from Greenwell Farms as of 8/24/2016.
+
+```{r dynamiccherrypricing, echo = FALSE}
+library("knitr")
+dat <- readRDS("../data/dynamiccherrypricing.rds")
+rownames(dat) <- NULL
+kable(dat, format = "markdown")
+```
+
+##Cherry Growth
+
+The previous decision tree model and simple decision model used the expected cherry on the farm based on acres times projected cherry per acre.  In this new dynamic model cherry growth is now incorporated in each period using a logistic growth function.  This is the total amount of green cherry on the farm in each month.  See harvesting below for ripe cherry.
+
+![Caption for the picture.](../figures/cherryonfarm.png)
+
+\newpage
+
+##Harvesting
+
+Harvesting is no longer based on proportion of projected cherry harvested in each month (e.g. 25% in October), but is now a simple choice of choosing to harvest or not.  If the choice is made to harvest, the  amount available on the farm is considered ripe and ready for picking.  Harvesting is also optimized as it was in the previous model. 
+
+
+##Markov process calibration
+
+To overcome the limitation of the growth rate of cbb from our previous models the new growth rate is based on a Markov process and the choice to spray or not spray.  The spray calibration matrix is based off of the SHAC data from Suzanne for Kona.  The simplify the dynamics of cherry growth and cbb growth the data was adjusted to account for only increasing C/D position with a max C/D infestation of 8%.  The no spray markov calibration matrices are based off of the max C/D position of 61%.  These can be calibrated further with better information and are used as a first cut.
+
+![Caption for the picture.](../figures/sp_p.png)
+
+![Caption for the picture.](../figures/nsp_p.png)
+
+\newpage
+
+## Main Results
+
+```{r totalnb, echo = FALSE}
+library("knitr")
+datt <- readRDS("../data/totalnb.rds")
+rownames(datt) <- NULL
+datt$cost <- NULL
+kable(datt, format = "markdown" )
+```
+
+The table above outlines the results of the model under the parameters above.  The spray schedule is to spray every month after May when harvesting in the last 4 months.  Notice the price has changed based on the level of infestation in each period.  harvest_s is whether to harvest or not, harvest_c is total cherry harvested, and harvest_p is the percentage of cherry harvested from the entire projected cherry for the year.  Total maximized NB = $15,5730.49.  The following plots detail the spraying schedule and various positions throughout the year.
+
+![Caption for the picture.](../figures/spnsp_p.png)
+
+![Caption for the picture.](../figures/inf_p.png)
