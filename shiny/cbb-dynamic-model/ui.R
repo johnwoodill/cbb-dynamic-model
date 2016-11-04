@@ -25,7 +25,7 @@ shinyUI(pageWithSidebar(
                          "June" = "jun", "July" = "jul", "August" = "aug", "September" = "sep", "October" = "oct", "November" = "nov", "December" = "dec"),
                        selected = c("sep", "oct", "nov", "dec")),
         
-    tags$h3("Initial Infestation"),
+    tags$h3("Initial Infestation (Must total 100)"),
     
     sliderInput("ni", "Not infested", 
                 min=000, max=100, value=90, step=1),
@@ -39,16 +39,15 @@ shinyUI(pageWithSidebar(
     sliderInput("cd", "C/D", 
                 min=000, max=100, value=1, step=1),
     
-    br(),
-    h3("Estimation")
-
-
+    br()
     ),
   
   # Show a table summarizing the values entered
   mainPanel(
-    tableOutput("datatable")
-    #plotOutput("graph1"),
+    tableOutput("datatable"),
+    
+    textOutput("totalnetben"),
+    plotOutput("graph1")
     #plotOutput("graph2")
 
   )

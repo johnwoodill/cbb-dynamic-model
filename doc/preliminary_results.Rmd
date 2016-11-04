@@ -40,8 +40,6 @@ Cost to spray = $\$ 180.00$
 
 Cost to harvest = $\$ 0.50$
 
-Projected cherry per acre = $\$ 7500$
-
 Harvest schedule : Sept, Oct, Nov, Dec
 
 Initial infestation levels : Not infested = 90%, AB Live = 8%, AB Dead = 1%, CD = 1%

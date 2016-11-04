@@ -1,6 +1,30 @@
 library("shiny")
 library("ggplot2")
-#source("shiny/cbb-dynamic-model/functions.R")
+library("dplyr")
+library("tidyr")
+
+
+
+# Simulation and Shiny Application of Flue Season Dynamics
+shinyServer(function(input, output) {
+  
+# Total Net Benefit data.frame
+totalnb <- data.frame()
+
+  # Hit counter
+  # output$counter <- 
+  #   renderText({
+  #     if (!file.exists("counter.Rdata")) counter <- 0
+  #     if (file.exists("counter.Rdata")) load(file="counter.Rdata")
+  #     counter <- counter + 1
+  #     
+  #     save(counter, file="counter.Rdata")     
+  #     paste0("Hits: ", counter)
+  #   })
+  
+  mydata <- reactive({
+    
+  #source("shiny/cbb-dynamic-model/functions.R")
 #' Determines dynamic cherry pricing based on Greenwell farms (8/26/2016)
 #' returns price based on level of infestation
 #' 
@@ -196,24 +220,17 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
   return(dat)
 }
 
-
-
-# Simulation and Shiny Application of Flue Season Dynamics
-shinyServer(function(input, output) {
   
-  # Hit counter
-  output$counter <- 
-    renderText({
-      if (!file.exists("counter.Rdata")) counter <- 0
-      if (file.exists("counter.Rdata")) load(file="counter.Rdata")
-      counter <- counter + 1
-      
-      save(counter, file="counter.Rdata")     
-      paste0("Hits: ", counter)
-    })
-  
-  mydata <- reactive({
     # Model Parameters:
+    req(input$acres)
+    req(input$cherry_per_acre)
+    req(input$cost_s)
+    req(input$cost_h)
+    req(input$harvestschedule)
+    req(input$ni)
+    req(input$ab_live)
+    req(input$ab_dead)
+    req(input$cd)
     acres <- as.numeric(input$acres)
     cherry_per_acre <- as.numeric(input$cherry_per_acre)
     cost_s <- as.numeric(input$cost_s)
@@ -319,17 +336,30 @@ shinyServer(function(input, output) {
   
     })
   
+  inf_data <- reactive({
+    dat <- select(mydata(), month, ni, ab_live, ab_dead, cd)
+    dat <- gather(dat, key = month, value = value)
+    names(dat) <- c("month", "Infestation", "value")
+    dat$Infestation <- factor(dat$Infestation, levels = c("ni", "ab_live", "ab_dead", "cd"))
+    dat
+  })
+  
+  totalnb <- reactive({
+    tot <- mydata()
+    round(sum(tot$nb),2)
+  })
+  
+  output$totalnetben <- renderText({
+    paste("Total Net Benefit: ", totalnb())})
+          
+          
   output$datatable <- renderTable(mydata())
   
-  #output$datatable <- renderDataTable(totalnb)
-  #   
-  # output$graph1 <- renderPlot({
-  #   p <- ggplot(mydata()[["long"]], 
-  #        aes(x=Period, y=Population, group=Indicator))    
-  #   p <- p + geom_line(aes(colour = Indicator), size=1.5) + 
-  #        ggtitle("Population Totals")
-  #   print(p)
-  # })
+     
+  output$graph1 <- renderPlot({
+     p <- ggplot(inf_data(), aes(month, value, color = Infestation)) + geom_line()    
+     print(p)
+   })
   # 
   # output$graph2 <- renderPlot({
   #   data2 <- mydata()[["wide"]]
