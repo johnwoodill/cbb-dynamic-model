@@ -20,15 +20,17 @@ shinyUI(pageWithSidebar(
     
     textInput("cost_h", "Cost to Harvest (per lbs)", "0.50"),
     
+    radioButtons("radio_decision", "Type of decision",
+                 c("Cost v. Damage" = "cost",
+                   "Infestation v. AB Live " = "infestation")),
+    
     checkboxGroupInput("harvestschedule", "Harvest Schedule", 
                        c("January" = "jan", "February" = "feb", "March" = "mar", "April" = "apr", "May" = "may", 
                          "June" = "jun", "July" = "jul", "August" = "aug", "September" = "sep", "October" = "oct", "November" = "nov", "December" = "dec"),
                        selected = c("sep", "oct", "nov", "dec")),
         
-    tags$h3("Initial Infestation (Must total 100)"),
-    
-    sliderInput("ni", "Not infested", 
-                min=000, max=100, value=90, step=1),
+    tags$h3("Initial Infestation"),
+    tags$h5("(Total must be <= 100)"),
     
     sliderInput("ab_live", "A/B Live", 
                 min=000, max=100, value=8, step=1),

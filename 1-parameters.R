@@ -11,6 +11,6 @@ harvestschedule <- c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0
 acres <- 2      # Farm acres
 cherry_per_acre <- 7500     # Estimated cherry per acres
 harvestedcherry <- 0        # Initial harvested cherry
-
+decision_type <- "infestation"              # TYpe of decision "cost" or "infestation"
 # Total Net Benefit data.frame
 totalnb <- data.frame()

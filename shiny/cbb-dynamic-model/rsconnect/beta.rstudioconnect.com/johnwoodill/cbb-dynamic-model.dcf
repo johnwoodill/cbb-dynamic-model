@@ -3,9 +3,9 @@ title: cbb-dynamic-model
 account: johnwoodill
 server: beta.rstudioconnect.com
 appId: 2082
-bundleId: 4276
+bundleId: 4303
 url: https://beta.rstudioconnect.com/content/2082/
-when: 1478285738.43414
+when: 1478645366.1276
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: counter.Rdata|functions.R

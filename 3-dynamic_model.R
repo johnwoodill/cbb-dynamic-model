@@ -31,7 +31,7 @@ for (i in 1:12){
   p <- cherrypricing(cv[4])
   
   # Calculate decision and infestation values
-  choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
+  choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv, decision_type = decision_type)
   
   # Get new current infestation values based on spray decision
   new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])
@@ -62,3 +62,5 @@ for (i in 1:12){
 
 totalnb <- round(totalnb, 2)
 saveRDS(totalnb, "data/totalnb.rds")
+totalnb
+sum(totalnb$nb)

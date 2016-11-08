@@ -102,7 +102,8 @@ cherrygrowth <- function(t, alpha, beta, r) {
 #' returns 0
 #' 
 
-decision <- function(cost_s, cherry, nsp_matrix, cv){
+decision <- function(cost_s, cherry, nsp_matrix, cv, decision_type){
+  if (decision_type == "cost"){
   # Determine whether to spray/not spray
   # If damage > cost to spray then spray
   # If cost > damage then choose not to spray
@@ -112,7 +113,27 @@ decision <- function(cost_s, cherry, nsp_matrix, cv){
   
   # Get decision : 1 (spray), 0 (no spray)
   dec <- ifelse(sp_damage >= cost_s, 1, 0)
-  return(dec)
+  return(dec)}
+  
+  if (decision_type == "infestation"){
+    perc_inf <- 1 - cv[1] 
+    ablive_inf <- cv[2]
+    if (perc_inf >= 0.01 & ablive_inf >= .80) return(1) 
+    if (perc_inf >= 0.02 & ablive_inf >= .50) return(1) 
+    if (perc_inf >= 0.03 & ablive_inf >= .35) return(1) 
+    if (perc_inf >= 0.04 & ablive_inf >= .25) return(1) 
+    if (perc_inf >= 0.05 & ablive_inf >= .20) return(1) 
+    if (perc_inf >= 0.10 & ablive_inf >= .10) return(1) 
+    if (perc_inf >= 0.15 & ablive_inf >= .05) return(1) 
+    if (perc_inf >= 0.20 & ablive_inf >= .04) return(1) 
+    if (perc_inf >= 0.25 & ablive_inf >= .04) return(1)
+    if (perc_inf >= 0.30 & ablive_inf >= .04) return(1) 
+    if (perc_inf >= 0.35 & ablive_inf >= .03) return(1) 
+    if (perc_inf >= 0.40 & ablive_inf >= .03) return(1) 
+    if (perc_inf >= 0.45 & ablive_inf >= .03) return(1) 
+    if (perc_inf >= 0.50 & ablive_inf >= .02) return(1) else return(0)
+    
+  }
 }
 
 
@@ -227,11 +248,12 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
     req(input$cost_s)
     req(input$cost_h)
     req(input$harvestschedule)
-    req(input$ni)
     req(input$ab_live)
     req(input$ab_dead)
     req(input$cd)
+    req(input$ab_live + input$ab_dead + input$cd <= 100)
     acres <- as.numeric(input$acres)
+    decision_type <- ifelse(input$radio_decision == "cost", "cost", "infestation")
     cherry_per_acre <- as.numeric(input$cherry_per_acre)
     cost_s <- as.numeric(input$cost_s)
     cost_h <- as.numeric(input$cost_h)
@@ -252,7 +274,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
       if (i_harvestschedule[i] == "dec") harvestschedule[12] <- 1
     }
     
-    ni <- as.numeric(input$ni)
+    ni <- 1 - as.numeric(input$ab_live + input$ab_dead + input$cd)
     ab_live <- as.numeric(input$ab_live)
     ab_dead <- as.numeric(input$ab_dead)
     cd <- as.numeric(input$cd)
@@ -304,7 +326,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
     p <- cherrypricing(cv[4])
     
     # Calculate decision and infestation values
-    choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
+    choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv, decision_type = decision_type)
     
     # Get new current infestation values based on spray decision
     new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])

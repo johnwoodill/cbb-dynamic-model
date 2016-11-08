@@ -43,6 +43,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
   dat <- data.frame(month = i, 
                     spray = choice, 
                     ni = cv[1], 
+                    inf = 1 - cv[1],
                     ab_live = cv[2], 
                     ab_dead = cv[3], 
                     cd = cv[4], 
