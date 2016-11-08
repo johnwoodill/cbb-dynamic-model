@@ -12,7 +12,7 @@ shinyUI(pageWithSidebar(
     
     tags$h3("Parameters"),
         
-    textInput("acres", "Acres", "5"),
+    textInput("acres", "Acres", "2"),
     
     textInput("cherry_per_acre", "Cherry per acre", "7500"),
     
@@ -21,8 +21,8 @@ shinyUI(pageWithSidebar(
     textInput("cost_h", "Cost to Harvest (per lbs)", "0.50"),
     
     radioButtons("radio_decision", "Type of decision",
-                 c("Cost v. Damage" = "cost",
-                   "Infestation v. AB Live " = "infestation")),
+                 c("Cost v. Damage" = 1,
+                   "Infestation v. AB Live " = 2)),
     
     checkboxGroupInput("harvestschedule", "Harvest Schedule", 
                        c("January" = "jan", "February" = "feb", "March" = "mar", "April" = "apr", "May" = "may", 

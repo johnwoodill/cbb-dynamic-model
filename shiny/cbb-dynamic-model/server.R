@@ -253,7 +253,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
     req(input$cd)
     req(input$ab_live + input$ab_dead + input$cd <= 100)
     acres <- as.numeric(input$acres)
-    decision_type <- ifelse(input$radio_decision == "cost", "cost", "infestation")
+    decision_type <- ifelse(input$radio_decision == 1, "cost", "infestation")
     cherry_per_acre <- as.numeric(input$cherry_per_acre)
     cost_s <- as.numeric(input$cost_s)
     cost_h <- as.numeric(input$cost_h)
@@ -274,7 +274,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
       if (i_harvestschedule[i] == "dec") harvestschedule[12] <- 1
     }
     
-    ni <- 1 - as.numeric(input$ab_live + input$ab_dead + input$cd)
+    ni <- 100 - as.numeric(input$ab_live + input$ab_dead + input$cd)
     ab_live <- as.numeric(input$ab_live)
     ab_dead <- as.numeric(input$ab_dead)
     cd <- as.numeric(input$cd)
