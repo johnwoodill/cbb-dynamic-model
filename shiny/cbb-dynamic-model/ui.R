@@ -5,7 +5,7 @@ library(shiny)
 shinyUI(pageWithSidebar(
   
   #  Application title
-  headerPanel("CBB Optimal Spraying and Harvesting Strategy"),
+  headerPanel("CBB Dynamic Model-Optimal Spraying and Harvesting Strategy"),
   
   # Sidebar with sliders that demonstrate various available options
   sidebarPanel(

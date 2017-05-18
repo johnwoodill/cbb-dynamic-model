@@ -2,7 +2,8 @@
 #' Date    : 10/26/2016
 #' Code    : shac_data_calibration.R
 #' Descrip.: calibrate nonhomogenous markov chains for economic damage estimation for Kona from SHAC data set
-#' 
+#'
+
 
 library(tidyr)
 library(ggplot2)
@@ -15,9 +16,10 @@ library(ggplot2)
 # Load data from SHAC
 dat <- read_csv("data/DO_NOT_DISTRIBUTE-SHAC CBB 12 Trees Database 2015 Anon.csv")
 names(dat) <- c("Acreage", "O_I", "Region", "FarmName", "LastSpray", "SampleDate", "OtherProducts", "CBBinf", "AB_Live", "AB_Dead", "CD", "Absent")
+dat <- drop_na(dat)
 
 # Data setup
-dat <- select(dat, Acreage, Region, SampleDate, CBBinf, AB_Live, AB_Dead, CD, Absent)
+dat <- select(dat, FarmName, Acreage, Region, SampleDate, CBBinf, AB_Live, AB_Dead, CD, Absent)
 dat$Acreage <- as.numeric(dat$Acreage)
 dat$AB_Live <- as.numeric(dat$AB_Live)
 dat$CBBinf <- as.numeric(dat$CBBinf)
@@ -38,6 +40,9 @@ dat$year <- year(dat$SampleDate)
 kona <- filter(dat, Region == "Kona")
 kona <- filter(kona, year == "2015")
 
+# Subset Haawiian Queen (n=38)
+kona <- filter(kona, FarmName == "Hawaiian Queen")
+
 # Average monthly data
 kona2 <- kona %>% 
   group_by(month) %>% 
@@ -54,13 +59,20 @@ kona2 <- gather(kona2, key = month, value = value)
 # Data setup
 names(kona2) <- c("month", "position", "value")
 
+# Refactor
+kona2$position <- factor(kona2$position, levels = c("avg_Absent", "avg_AB_Live", "avg_AB_Dead", "avg_CD"))
+
 # Plot
 ggplot(kona2, aes(month, value, color = position)) + geom_smooth(se = FALSE)
 
 # Get data frame
 kona2 <- filter(kona2, month != 2)
+kona2 <- spread(kona2, key = position, value = value)
 kona2$month <- NULL
-test <- spread(kona2, key = value, value = value)
+names(kona2) <- c("C", "B", "A", "D")
+kona2 <- select(kona2, A, B, C, D)
+kona2
+
 as.matrix(kona2)
 
 #              [,1]     [,2]     [,3]     [,4]      [,5]     [,6]     [,7]     [,8]

@@ -292,25 +292,53 @@ maxnb <- function(p, cost_s, cost_h, h, cherry, harvestedcherry, cv, d){
     #source("R/markovcalibration.R")
     
     # ------------------------------------------------------
-    # Spray calibration
-    sp_mat <- data.frame(A = c(rep(0, 13)),                                       # Not Infested
-                      B = c(40 ,37, 35 ,30, 27, 21, 15, 16, 21, 19, 17, 15, 14),  # A/B Live
-                      C = c(10, 15, 20, 23, 30, 34, 34, 37, 40, 41, 43, 44, 43),  # A/B Dead
-                      D = c(1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15))         # C/D Position
+    # # Spray calibration
+    # sp_mat <- data.frame(A = c(rep(0, 13)),                                       # Not Infested
+    #                   B = c(40 ,37, 35 ,30, 27, 21, 15, 16, 21, 19, 17, 15, 14),  # A/B Live
+    #                   C = c(10, 15, 20, 23, 30, 34, 34, 37, 40, 41, 43, 44, 43),  # A/B Dead
+    #                   D = c(1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15))         # C/D Position
+    # 
+    # sp_mat$A <- apply(sp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
+    # 
+    # sp_mcListFit <- markovcalibration(sp_mat)
+    # 
+    # # No spray calibration
+    # nsp_mat <- data.frame(A = c(rep(0, 13)),                                        # Not Infested
+    #                   B = c(40 ,37, 35 ,30, 27, 21, 15, 16, 21, 19, 17, 15, 14),    # A/B Live
+    #                   C = c(5, 7, 10, 12, 15, 17, 18, 19, 20, 22, 23, 24, 25),      # A/B Dead
+    #                   D = c(1, 5, 8, 11, 15, 20, 25, 35, 40, 50, 55, 60, 61))       # C/D Position
+    # 
+    # nsp_mat$A <- apply(nsp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
+    # 
+    # nsp_mcListFit <- markovcalibration(nsp_mat)
     
-    sp_mat$A <- apply(sp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
-    
-    sp_mcListFit <- markovcalibration(sp_mat)
-    
-    # No spray calibration
-    nsp_mat <- data.frame(A = c(rep(0, 13)),                                        # Not Infested
-                      B = c(40 ,37, 35 ,30, 27, 21, 15, 16, 21, 19, 17, 15, 14),    # A/B Live
-                      C = c(5, 7, 10, 12, 15, 17, 18, 19, 20, 22, 23, 24, 25),      # A/B Dead
-                      D = c(1, 5, 8, 11, 15, 20, 25, 35, 40, 50, 55, 60, 61))       # C/D Position
-    
-    nsp_mat$A <- apply(nsp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
-    
-    nsp_mcListFit <- markovcalibration(nsp_mat)
+sp_mat <- data.frame(A = c(rep(0, 13)),
+                      B = c(6.5, 6, 5.8, 5.5, 5.33, 2.25, 0.80, 0.34, 0.28, 0.59, 1.02, 6.62, 7),
+                      C = c(2.2, 2.1, 1.9, 1.7, 1.49, 0.94, 1.29, 0.77, 0.85, 0.42, 0.49, 0.69, 1),
+                      D = c(6, 5, 3.5, 3, 1.11, 0.40, 0.95, 1.26, 1.32, 2.29, 3.11, 7.16, 7.4))
+
+sp_mat <- as.data.frame(apply(sp_mat, 2, function(x) ceiling(x)))
+sp_mat$A <- apply(sp_mat, 1, function(x) 100 - sum(x))                        # Not Infested
+
+# 
+# p <- sp_mat
+# p$A <- NULL
+# p$month <- seq(1,13, 1)
+# p <- gather(p, key, value, -month)
+# ggplot(p, aes(month, value, color = key)) + geom_line()
+# 
+sp_mcListFit <- markovcalibration(sp_mat)
+
+# No spray calibration
+
+nsp_mat <- data.frame(A = c(rep(0, 13)),
+                      B = 6*sp_mat$B,
+                      C = sp_mat$C,
+                      D = 6*sp_mat$D)
+
+nsp_mat <- as.data.frame(apply(nsp_mat, 2, function(x) ceiling(x)))
+nsp_mat$A <- apply(nsp_mat, 1, function(x) 100 - sum(x))         
+nsp_mcListFit <- markovcalibration(nsp_mat)
     # ------------------------------------------------------
     
     cherryonfarm <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 1, r = .3)

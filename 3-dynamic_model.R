@@ -20,12 +20,14 @@ source("2-calibrate_markov_chains.R")
 source("R/cherrygrowth.R")
 cherryonfarm <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 1, r = .3)
 
-plot(cherryonfarm) 
+#plot(cherryonfarm) 
+cv <- c(0, 0.08, 0.01, .01)  
+cv[1] <- 1 - sum(cv)
 
 #---------------------------------------
 # Dynamic optimization problem
 
-for (i in 1:12){
+for (i in 1:8){
   
   # Dynamic cherry pricing
   p <- cherrypricing(cv[4])
@@ -60,7 +62,7 @@ for (i in 1:12){
   harvestedcherry <- sum(totalnb$harvest_c)
 }
 
-totalnb <- round(totalnb, 2)
-saveRDS(totalnb, "data/totalnb.rds")
+# totalnb <- round(totalnb, 2)
+# saveRDS(totalnb, "data/totalnb.rds")
 totalnb
 sum(totalnb$nb)
