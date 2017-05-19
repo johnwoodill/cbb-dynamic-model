@@ -21,15 +21,24 @@ dat1 <- data.frame(month = 3:12,
 dat1$NI <- 100 - dat1$INF
 dat1$B <- 100-(dat1$A+dat1$C)
 
-# No spray calibration
+# No spray calibration (From luis)
 # Dissect level
 dat2 <- data.frame(month = 3:12,
-                   A = c(79, 73, 76, 60, 48, 20, 22, 16, 10, 3),      # A/B Live
+                   A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
                    B = rep(0, 10),             # A/B Dead
-                   C = c(20, 22, 23, 39, 48, 76, 77, 82, 89, 93),     # C/D Position
+                   C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
                   INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
 dat2$B <- 100-(dat2$A+dat2$C)
 dat2$NI <- 100 - dat2$INF
+
+# Dissect level
+# dat2 <- data.frame(month = 3:12,
+#                    A = c(79, 73, 76, 60, 48, 20, 22, 16, 10, 3),      # A/B Live
+#                    B = rep(0, 10),             # A/B Dead
+#                    C = c(20, 22, 23, 39, 48, 76, 77, 82, 89, 93),     # C/D Position
+#                   INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
+# dat2$B <- 100-(dat2$A+dat2$C)
+# dat2$NI <- 100 - dat2$INF
 
 # Plot
 newdat1 <- dat1[, 1:4]
@@ -66,7 +75,6 @@ names(spi_mat) <- c("I", "NI")
 spi_mat
 spi_mat <- as.data.frame(apply(spi_mat, 2, function(x) floor(x)))
 spi_mat
-#dat_tseq <- apply(t(sp_mat), 2, function(x) rep(row.names(t(sp_mat)), x))
 spi_mcListFit <- markovcalibration(spi_mat)
 spi_mcListFit
 
@@ -83,12 +91,10 @@ sp_mcListFit
 # No Spray matrix for infestation rate
 #
 nspi_mat <- dat2[,5:6]
-# nspi_mat <- nspi_mat[3:12,]
 names(nspi_mat) <- c("I", "NI")
 nspi_mat
 nspi_mat <- as.data.frame(apply(nspi_mat, 2, function(x) floor(x)))
 nspi_mat
-#dat_tseq <- apply(t(sp_mat), 2, function(x) rep(row.names(t(sp_mat)), x))
 nspi_mcListFit <- markovcalibration(nspi_mat)
 nspi_mcListFit
 
@@ -100,22 +106,23 @@ nsp_mat
 nsp_mcListFit <- markovcalibration(nsp_mat)
 nsp_mcListFit
 
-
+##############################################
+# Dynamic Model setup
 # Did not follow IPM
-cv <- c(70, 10, 20)
+cv <- c(30, 50, 20)
 il <- c(45, 55)
 
 # Followed IPM
-cv <- c(75, 5, 20)  # Infestation levels
-il <- c(20, 80)
+cv <- c(55, 25, 20)  # Infestation levels
+il <- c(10, 90)
 
-# Loop through 
-
-mat <- data.frame(A = rep(0, 10), B = rep(0, 10), C = rep(0, 10), spray = rep(0, 10), inf = rep(0, 10), chart = rep(0, 10), cd_damage = rep(0, 10),
-                  Month = c("March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"))
-mat[1,1:3] <- cv
-mat$inf[1] <- il[1]/il[2]*100
-mat$chart[1] <- (mat$inf[1])*(mat[1,1])/100
+# Dynamic Model
+{
+mat <- data.frame(Month = c("March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"),
+                  ab_live = rep(0, 10), ab_dead = rep(0, 10), cd = rep(0, 10), spray = rep(0, 10), inf = rep(0, 10), chart = rep(0, 10))
+mat[1,2:4] <- cv
+mat$inf[1] <- il[1]
+mat$chart[1] <- (mat$inf[1])*(mat[1,2])/100
 
 mat
 # 1-2 Consider spraying 
@@ -124,38 +131,38 @@ mat
 # 10-19.99 You are losing money
 # 20 - Processors may reject your harvest
 
-decision <- 1
+decision <- 2
 
 # Decision based on sampling
 for (i in 1:9){
-  choice <- 0
-  mat$chart[i] <- (mat$inf[i]/100)*(mat[i,1]/100)*100
-  mat$cd_damage[i] <- (cv[3]/100)*(mat$inf[i]/100)*100
-  if (mat$chart[i] >= decision) {
-    choice <- 1
-  } 
+  if (i == 1){
+  # Check infestation values = 100
+  if (sum(cv) != 100) stop ("Infestation Levels do not equal 100")
+  if (sum(il) != 100) stop ("Field Infestation values do not equal 100")
+  }
+  mat$chart[i] <- (mat$inf[i])*(mat[i,2])/100
+  mat$field_ablive[i] <- (cv[1])*(mat$inf[i])/100
+  mat$field_abdead[i] <- (cv[2])*(mat$inf[i])/100
+  mat$field_cd[i] <- (cv[3])*(mat$inf[i])/100
+  choice <- ifelse(mat$chart[i] >= decision, 1, 0)
   cv <- choice*cv %*% sp_mcListFit$estimate[[i]][] + (1 - choice)*cv %*% nsp_mcListFit$estimate[[i]][]
   if (length(spi_mcListFit$estimate[[i]][]) == 1) {
     il <- il
-  } else{
+  } else {
     il <- choice*il %*% spi_mcListFit$estimate[[i]][] + (1 - choice)*il %*% nspi_mcListFit$estimate[[i]][]
     }
-  inf <- il[1]/il[2]
-  #mat$chart[i+1] <- (inf)*(cv[1]/100)*100
-  mat[i+1, 1:3] <- cv
-  mat[i+1, 5] <- inf*100
+  mat[i+1, 2:4] <- cv
+  mat[i+1, 6] <- il[1]
   mat$spray[i] <- choice
   if (i == 9){
-    choice <- 0
-    mat$chart[i+1] <- (mat$inf[i+1])*(mat[i+1,1])/100
-    if (mat$chart[i+1] >= decision) {
-    choice <- 1
-    } 
-      inf <- il[1]/il[2]
-      mat$cd_damage[i+1] <- (cv[3]/100)*inf*100
-      mat$spray[i+1] <- choice
+    mat$chart[i+1] <- (mat$inf[i+1])*(mat[i+1,2])/100
+    choice <- ifelse(mat$chart[i+1] >= decision, 1, 0)
+    mat$field_ablive[i+1] <- (cv[1])*(mat$inf[i+1])/100
+    mat$field_abdead[i+1] <- (cv[2])*(mat$inf[i+1])/100
+    mat$field_cd[i+1] <- (cv[3])*(mat$inf[i+1])/100
+    mat$spray[i+1] <- choice
   }
 }
 
 mat
-
+}
