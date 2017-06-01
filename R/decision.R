@@ -19,11 +19,11 @@ decision <- function(cost_s, cherry, nsp_matrix, cv){
   # Determine whether to spray/not spray
   # If damage > cost to spray then spray
   # If cost > damage then choose not to spray
-  spray <- cv %*% nsp_matrix
-  spray_growth <- spray[4] - cv[4]
-  sp_damage <- spray_growth * cherry * cherrypricing(spray[4])
+  nspray <- cv %*% nsp_matrix
+  nspray_growth <- nspray[3] - cv[3]
+  nsp_damage <- nspray_growth * cherry * cherrypricing(nspray[3])
   
   # Get decision : 1 (spray), 0 (no spray)
-  dec <- ifelse(sp_damage >= cost_s, 1, 0)
+  dec <- ifelse(nsp_damage >= cost_s, 1, 0)
   return(dec)
 }
