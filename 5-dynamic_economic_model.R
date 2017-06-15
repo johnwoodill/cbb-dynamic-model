@@ -28,7 +28,7 @@ cherryonfarm <- cherryonfarm[3:12]
 {
 cost_s <- 180    # Cost to spray
 cost_h <- .5     # Cost to harvest per pound of cherry
-cv <- c(0.08, 0.02, 0.13, 0) # Initial infestation
+cv <- c(0.08, 0.02, 0.01, 0) # Initial infestation
 cv[4] <- 1 - sum(cv)
 new_cv <- cv     # Set new infestation to initial infestation
 #harvestschedule <- c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
@@ -52,8 +52,8 @@ for (i in 1:9){
   
   # Calculate decision and infestation values
   #decsion_type <- "cost"
-  #choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
-  choice <- 1
+  choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
+  #choice <- 1
   # Get new current infestation values based on spray decision
   new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])
   
@@ -66,15 +66,14 @@ for (i in 1:9){
   
   # Optimize Net Benefit (NB)
   nb <- maxnb(p = p, 
-  cost_s = cost_s, 
-  cost_h = cost_h, 
-  cherryforharvest = acres*cherry_per_acre*harvestpercentages[i],
-  cherry_on_farm = cherryonfarm[i], 
-  h = harvestschedule[i], 
-  harvestedcherry =  harvestedcherry,
-  #cv = new_cv,
-  cv = cv,
-  i = i)
+              cost_s = cost_s, 
+              cost_h = cost_h, 
+              cherryforharvest = acres*cherry_per_acre*harvestpercentages[i],
+              cherry_on_farm = cherryonfarm[i], 
+              h = harvestschedule[i], 
+              harvestedcherry =  harvestedcherry,
+              cv = cv,
+              i = i)
   
   # Build data frame with results
   totalnb <- rbind(totalnb, nb)
@@ -84,7 +83,7 @@ for (i in 1:9){
   harvestedcherry <- sum(totalnb$harvest_c)
   
   if (i == 9){
-    
+      choice <- 0
       nb <- maxnb(p = p, 
             cost_s = cost_s, 
             cost_h = cost_h, 
@@ -92,13 +91,13 @@ for (i in 1:9){
             cherry_on_farm = cherryonfarm[i+1], 
             h = harvestschedule[i+1], 
             harvestedcherry =  harvestedcherry,
-            #cv = new_cv,
             cv = cv,
             i = i+1)
       totalnb <- rbind(totalnb, nb)
   }
 }
 
+totalnb
 #totalnb <- round(totalnb, 2)
 # saveRDS(totalnb, "data/totalnb.rds")
 totalnb
