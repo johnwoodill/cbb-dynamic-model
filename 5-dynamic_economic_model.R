@@ -13,17 +13,6 @@ source("R/cherrypricing.R")
 # Initiate parameters
 #source("1-parameters.R")
 
-# Get calibrated markov chains
-calibration_type <- "field"
-source("2-calibrate_markov_chains.R")
-
-# Cherry growth 
-source("R/cherrygrowth.R")
-cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 1, r = .3)
-cherryonfarm <- cherryonfarm[3:12]
-
-#plot(cherryonfarm) 
-
 # Model parameters
 {
 cost_s <- 180    # Cost to spray
@@ -40,6 +29,19 @@ harvestedcherry <- 0        # Initial harvested cherry
 decision_type <- "cost"     # TYpe of decision "cost" or "infestation"
 totalnb <- data.frame()
 }
+
+# Get calibrated markov chains
+calibration_type <- "field"
+source("2-calibrate_markov_chains.R")
+
+# Cherry growth 
+source("R/cherrygrowth.R")
+cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 1, r = .3)
+cherryonfarm <- cherryonfarm[3:12]
+
+#plot(cherryonfarm) 
+
+
 
 # Convert to field level
 #---------------------------------------
