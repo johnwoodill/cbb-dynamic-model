@@ -9,6 +9,18 @@ source("R/markovcalibration.R")
 calibration_type <- "dissect"
 source("2-calibrate_markov_chains.R")
 
+source("R/cherrypricing.R")
+
+# Parameters
+cost_s <- 180    # Cost to spray
+cost_h <- .5     # Cost to harvest per pound of cherry
+harvestschedule <- c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
+harvestpercentages <- c(0, 0, 0, 0, 0, 0, .32, .48, .12, .08)
+acres <- 2      # Farm acres
+cherry_per_acre <- 7500     # Estimated cherry per acres
+harvestedcherry <- 0        # Initial harvested cherry
+
+
 # IPM Model setup
 ##############################################
 
@@ -58,6 +70,12 @@ for (i in 1:9){
   mat[i+1, 2:4] <- cv
   mat[i+1, 6] <- il[1]
   mat$spray[i] <- choice
+  mat$price[i] <- cherrypricing(mat$field_cd[i]/100)
+  mat$harvest_s[i] <- harvestschedule[i]
+  mat$harvest_c[i] <- cherry_per_acre*acres*harvestpercentages[i]
+  mat$cd_damage[i] <- mat$harvest_s[i]*(mat$field_cd[i]/100)*harvestpercentages[i]*cherry_per_acre*acres
+  mat$nb[i] <- (mat$harvest_c[i] - mat$cd_damage[i])*mat$price[i] - mat$spray[i]*cost_s - cost_h*mat$harvest_c[i]
+  
   if (i == 9){
     mat$chart[i+1] <- (mat$inf[i+1])*(mat[i+1,2])/100
     choice <- ifelse(mat$chart[i+1] >= decision, 1, 0)
@@ -65,9 +83,20 @@ for (i in 1:9){
     mat$field_abdead[i+1] <- (cv[2])*(mat$inf[i+1])/100
     mat$field_cd[i+1] <- (cv[3])*(mat$inf[i+1])/100
     mat$spray[i+1] <- choice
+        mat$price[i+1] <- cherrypricing(mat$field_cd[i]/100)
+    mat$harvest_s[i+1] <- harvestschedule[i+1]
+    mat$harvest_c[i+1] <- cherry_per_acre*acres*harvestpercentages[i+1]
+    mat$cd_damage[i+1] <- mat$harvest_s[i+1]*(mat$field_cd[i+1]/100)*harvestpercentages[i+1]*cherry_per_acre*acres
+    mat$nb[i+1] <- (mat$harvest_c[i+1] - mat$cd_damage[i+1])*mat$price[i+1] - mat$spray[i+1]*cost_s - cost_h*mat$harvest_c[i+1]
+  
   }
 }
 
 mat
 }
+
+mat
+#sum(mat$nb)
+
+
 write.csv(mat, "/home/john/ipmmodel.csv")
