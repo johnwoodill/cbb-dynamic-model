@@ -35,7 +35,7 @@ mat
 # 10-19.99 You are losing money
 # 20 - Processors may reject your harvest
 
-decision <- 2
+decision <- 1
 
 # Decision based on sampling
 for (i in 1:9){
@@ -70,3 +70,4 @@ for (i in 1:9){
 
 mat
 }
+write.csv(mat, "/home/john/ipmmodel.csv")

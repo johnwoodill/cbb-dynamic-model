@@ -63,7 +63,7 @@ for (i in 1:9){
   mat$spray[i] <- choice
   if (i == 9){
     mat$chart[i+1] <- (mat$inf[i+1])*(mat[i+1,2])/100
-    choice <- ifelse(mat$chart[i+1] >= decision, 1, 0)
+    choice <- 1
     mat$field_ablive[i+1] <- (cv[1])*(mat$inf[i+1])/100
     mat$field_abdead[i+1] <- (cv[2])*(mat$inf[i+1])/100
     mat$field_cd[i+1] <- (cv[3])*(mat$inf[i+1])/100
@@ -73,3 +73,4 @@ for (i in 1:9){
 
 mat
 }
+write.csv(mat, "/home/john/alwaysspray.csv")
