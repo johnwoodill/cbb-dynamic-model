@@ -20,7 +20,7 @@ il <- c(45, 55)
 cv <- c(55, 25, 20)  # Infestation levels
 il <- c(10, 90)
 
-# Dynamic Model
+# IPM Model
 {
 mat <- data.frame(Month = c("March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"),
                   ab_live = rep(0, 10), ab_dead = rep(0, 10), cd = rep(0, 10), spray = rep(0, 10), inf = rep(0, 10), chart = rep(0, 10))

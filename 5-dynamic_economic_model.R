@@ -11,7 +11,7 @@ source("R/decision.R")
 source("R/cherrypricing.R")
 
 # Initiate parameters
-source("1-parameters.R")
+#source("1-parameters.R")
 
 # Get calibrated markov chains
 calibration_type <- "field"
@@ -28,7 +28,7 @@ cherryonfarm <- cherryonfarm[3:12]
 {
 cost_s <- 180    # Cost to spray
 cost_h <- .5     # Cost to harvest per pound of cherry
-cv <- c(0.08, 0.02, 0.01, 1) # Initial infestation
+cv <- c(0.08, 0.02, 0.01, .11) # Initial infestation
 cv[4] <- 1 - sum(cv)
 new_cv <- cv     # Set new infestation to initial infestation
 #harvestschedule <- c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
