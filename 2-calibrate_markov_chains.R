@@ -1,5 +1,7 @@
 source("R/markovcalibration.R")
 
+# Called from each model. Be sure to set 'calibration_type' to 'dissect' or field
+
 # Markov calibration
 #-------------------------------------------------------
 
@@ -9,8 +11,8 @@ source("R/markovcalibration.R")
 # Dissect level 
 # dat1 <- data.frame(month = 3:12,
 #                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 6, 3),      # A/B Live
-#                    B = rep(0, 1),      # A/B Dead
-#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
+#                    B = rep(0, 1),                                   # A/B Dead
+#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),   # C/D Position
 #                    INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
 # dat1$NI <- 100 - dat1$INF
 # dat1$B <- 100-(dat1$A+dat1$C)
@@ -19,7 +21,7 @@ source("R/markovcalibration.R")
 # # Dissect level
 # dat2 <- data.frame(month = 3:12,
 #                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-#                    B = rep(0, 10),             # A/B Dead
+#                    B = rep(0, 10),                                    # A/B Dead
 #                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
 #                    INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
 # dat2$B <- 100-(dat2$A+dat2$C)
@@ -28,7 +30,7 @@ source("R/markovcalibration.R")
 # Check
 dat1 <- data.frame(month = 3:12,
                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 7, 6 ),      # A/B Live
-                   B = rep(0, 1),      # A/B Dead
+                   B = rep(0, 1),                                    # A/B Dead
                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
                    INF = c(21, 17, 12, 8, 5, 6, 9, 10, 14, 17))
 dat1$NI <- 100 - dat1$INF
@@ -38,7 +40,7 @@ dat1$B <- 100-(dat1$A+dat1$C)
 # Dissect level
 dat2 <- data.frame(month = 3:12,
                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-                   B = rep(0, 10),             # A/B Dead
+                   B = rep(0, 10),                                    # A/B Dead
                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
                    INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
 dat2$B <- 100-(dat2$A+dat2$C)
@@ -46,6 +48,8 @@ dat2$NI <- 100 - dat2$INF
 
 
 if (calibration_type  == "dissect"){
+  
+  
 # Dissect level
 #########################################
 #
@@ -129,3 +133,4 @@ nsp_mcListFit <- markovcalibration(nsp_mat)
 nsp_mcListFit
 
 }
+

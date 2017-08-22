@@ -1,54 +1,48 @@
-library(tidyr)
-library(ggplot2)
-library(dplyr)
+rm(list=ls())
+
+library(tidyverse)
 library(markovchain)
-library(readr)
-library(lubridate)
-library(cowplot)
+
 source("R/markovcalibration.R")
+
+# Calibrate matrices
 calibration_type <- "dissect"
 source("2-calibrate_markov_chains.R")
 
+# Call cherry pricing function
 source("R/cherrypricing.R")
 
-# Parameters
-cost_s <- 180    # Cost to spray
-cost_h <- .5     # Cost to harvest per pound of cherry
-harvestschedule <- c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
-harvestpercentages <- c(0, 0, 0, 0, 0, 0, .32, .48, .12, .08)
-acres <- 2      # Farm acres
-cherry_per_acre <- 7500     # Estimated cherry per acres
-harvestedcherry <- 0        # Initial harvested cherry
+# Get model parameters
+source("1-parameters.R")
+
+
+# Did not follow IPM
+# cv <- c(30, 50, 20)
+# il <- c(45, 55)
+
+# Set up initial values
+# Followed IPM
+
+# Initial dissect levels
+cv <- c(55, 25, 20)  # Infestation levels
+
+# Initial Infestation levels
+il <- c(10, 90)
 
 # Always Spray Model setup
 ##############################################
 
-# Did not follow IPM
-cv <- c(30, 50, 20)
-il <- c(45, 55)
 
-# Followed IPM
-cv <- c(55, 25, 20)  # Infestation levels
-il <- c(10, 90)
 
-# Dynamic Model
+# Always Spray Model
 {
-mat <- data.frame(Month = c("March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"),
+mat <- data.frame(Month = c(3:12),
                   ab_live = rep(0, 10), ab_dead = rep(0, 10), cd = rep(0, 10), spray = rep(0, 10), inf = rep(0, 10), chart = rep(0, 10))
 mat[1,2:4] <- cv
 mat$inf[1] <- il[1]
+mat$ni[1] <- 100 - il[1]
 mat$chart[1] <- (mat$inf[1])*(mat[1,2])/100
 
-mat
-# 1-2 Consider spraying 
-# 2-5 Critical level to start spraying 
-# 5-10 You are starting to lose money, but may still want to spray
-# 10-19.99 You are losing money
-# 20 - Processors may reject your harvest
-
-decision <- 1
-
-# Decision based on sampling
 for (i in 1:9){
   if (i == 1){
   # Check infestation values = 100
@@ -97,4 +91,5 @@ mat
 sum(mat$nb)
 
 }
-write.csv(mat, "/home/john/alwaysspray.csv")
+mat$model <- "AS"
+saveRDS(mat, "results/alwaysspray.rds")

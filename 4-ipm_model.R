@@ -1,40 +1,40 @@
-library(tidyr)
-library(ggplot2)
-library(dplyr)
+rm(list=ls())
+
+library(tidyverse)
 library(markovchain)
-library(readr)
-library(lubridate)
-library(cowplot)
+
 source("R/markovcalibration.R")
+
+# Calibrate matrices
 calibration_type <- "dissect"
 source("2-calibrate_markov_chains.R")
 
+# Call dynamic pricing
 source("R/cherrypricing.R")
 
-# Parameters
-cost_s <- 180    # Cost to spray
-cost_h <- .5     # Cost to harvest per pound of cherry
-harvestschedule <- c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
-harvestpercentages <- c(0, 0, 0, 0, 0, 0, .32, .48, .12, .08)
-acres <- 2      # Farm acres
-cherry_per_acre <- 7500     # Estimated cherry per acres
-harvestedcherry <- 0        # Initial harvested cherry
+# Get model parameters
+source("1-parameters.R")
+
+# Add $100 per acre due to sampling each month
+cost_s <- cost_s + 100
 
 
 # IPM Model setup
 ##############################################
 
 # Did not follow IPM
-cv <- c(30, 50, 20)
-il <- c(45, 55)
+# cv <- c(30, 50, 20)
+# il <- c(45, 55)
 
 # Followed IPM
-cv <- c(55, 25, 20)  # Infestation levels
+cv <- c(55, 25, 20)  
+
+# Infestation levels
 il <- c(10, 90)
 
 # IPM Model
 {
-mat <- data.frame(Month = c("March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"),
+mat <- data.frame(Month = c(3:12),
                   ab_live = rep(0, 10), ab_dead = rep(0, 10), cd = rep(0, 10), spray = rep(0, 10), inf = rep(0, 10), chart = rep(0, 10))
 mat[1,2:4] <- cv
 mat$inf[1] <- il[1]
@@ -95,8 +95,11 @@ for (i in 1:9){
 mat
 }
 
+# Set spray cost = 100 even if don't spray
+#mat$spray <- ifelse(mat$spray == 0, mat$nb - 100, mat$nb)
+
 mat
-#sum(mat$nb)
+sum(mat$nb)
 
-
-write.csv(mat, "/home/john/ipmmodel.csv")
+mat$model <- "IPM"
+saveRDS(mat, "results/ipmspray.rds")

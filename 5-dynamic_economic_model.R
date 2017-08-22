@@ -1,5 +1,7 @@
-#' 
 rm(list=ls())
+
+library(tidyverse)
+library(markovchain)
 
 # Net benefit optimization function
 source("R/maxnb.R")
@@ -11,24 +13,12 @@ source("R/decision.R")
 source("R/cherrypricing.R")
 
 # Initiate parameters
-#source("1-parameters.R")
+source("1-parameters.R")
 
-# Model parameters
-{
-cost_s <- 180    # Cost to spray
-cost_h <- .5     # Cost to harvest per pound of cherry
-cv <- c(0.08, 0.02, 0.01, .11) # Initial infestation
+# Initial infestaiton levels 
+cv <- c(0.055, 0.025, .02) 
 cv[4] <- 1 - sum(cv)
-new_cv <- cv     # Set new infestation to initial infestation
-#harvestschedule <- c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
-harvestschedule <- c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1)    # Harvest schedule 0-No Harvest  1-Harvest
-harvestpercentages <- c(0, 0, 0, 0, 0, 0, .32, .48, .12, .08)
-acres <- 2      # Farm acres
-cherry_per_acre <- 7500     # Estimated cherry per acres
-harvestedcherry <- 0        # Initial harvested cherry
-decision_type <- "cost"     # TYpe of decision "cost" or "infestation"
-totalnb <- data.frame()
-}
+#new_cv <- cv  
 
 # Get calibrated markov chains
 calibration_type <- "field"
@@ -36,12 +26,18 @@ source("2-calibrate_markov_chains.R")
 
 # Cherry growth 
 source("R/cherrygrowth.R")
+
+# Jan - Dec
 cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 1, r = .3)
+# ggplot(NULL, aes(cherryonfarm, x = 1:12)) + geom_line() + xlab("Month") +
+#   scale_x_continuous(breaks = 1:12) +
+#   ylab("lbs. of cherry") + theme_tufte(base_size = 14) + 
+#     annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
+#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#   ggtitle("Cherry Growth on 2-acre Farm from January to December")
+
+
 cherryonfarm <- cherryonfarm[3:12]
-
-#plot(cherryonfarm) 
-
-
 
 # Convert to field level
 #---------------------------------------
@@ -106,4 +102,5 @@ totalnb
 sum(totalnb$nb)
 sum(totalnb$harvest_c)
 15000*harvestpercentages
-write.csv(totalnb, "/home/john/dynamicmodel.csv")
+totalnb$model <- "DP"
+saveRDS(totalnb, "results/dynamicmodel.rds")
