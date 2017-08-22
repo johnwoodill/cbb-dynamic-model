@@ -96,10 +96,10 @@ mat
 }
 
 # Set spray cost = 100 even if don't spray
-#mat$spray <- ifelse(mat$spray == 0, mat$nb - 100, mat$nb)
+mat$nb <- ifelse(mat$spray == 0, mat$nb - 100, mat$nb)
 
 mat
 sum(mat$nb)
 
-mat$model <- "IPM"
+mat$model <- "IPM Choice"
 saveRDS(mat, "results/ipmspray.rds")

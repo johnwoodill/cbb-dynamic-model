@@ -102,5 +102,9 @@ totalnb
 sum(totalnb$nb)
 sum(totalnb$harvest_c)
 15000*harvestpercentages
-totalnb$model <- "DP"
+totalnb$model <- "Economic Model"
+totalnb$field_ablive <- totalnb$field_ablive*100
+totalnb$field_abdead <- totalnb$field_abdead*100
+totalnb$field_cd <- totalnb$field_cd*100
+
 saveRDS(totalnb, "results/dynamicmodel.rds")
