@@ -17,17 +17,25 @@ source("1-parameters.R")
 
 
 # Did not follow IPM
-# cv <- c(30, 50, 20)
-# il <- c(45, 55)
-
-# Set up initial values
-# Followed IPM
-
 # Initial dissect levels
-cv <- c(55, 25, 20)  # Infestation levels
+# Field-level AB live: 13.5%
+#             AB Dead: 22.5%
+#                  CD: 9%
 
-# Initial Infestation levels
-il <- c(10, 90)
+cv <- c(30, 50, 20)
+il <- c(45, 55)
+
+
+# Followed IPM
+# Initial dissect levels
+# Field-level AB live: 5.5%
+#             AB Dead: 2.5%
+#                  CD: 2%
+
+##############################
+# Infestation levels
+#cv <- c(55, 25, 20) 
+#il <- c(10, 90)
 
 # Always Spray Model setup
 ##############################################
@@ -91,5 +99,6 @@ mat
 sum(mat$nb)
 
 }
+mat
 mat$model <- "Always Spray"
 saveRDS(mat, "results/alwaysspray.rds")

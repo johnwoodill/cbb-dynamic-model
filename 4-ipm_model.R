@@ -23,14 +23,25 @@ cost_s <- cost_s + 100
 ##############################################
 
 # Did not follow IPM
-# cv <- c(30, 50, 20)
-# il <- c(45, 55)
+# Initial dissect levels
+# Field-level AB live: 13.5%
+#             AB Dead: 22.5%
+#                  CD: 9%
+
+cv <- c(30, 50, 20)
+il <- c(45, 55)
+
 
 # Followed IPM
-cv <- c(55, 25, 20)  
+# Initial dissect levels
+# Field-level AB live: 5.5%
+#             AB Dead: 2.5%
+#                  CD: 2%
 
+##############################
 # Infestation levels
-il <- c(10, 90)
+#cv <- c(55, 25, 20) 
+#il <- c(10, 90)
 
 # IPM Model
 {

@@ -15,9 +15,24 @@ source("R/cherrypricing.R")
 # Initiate parameters
 source("1-parameters.R")
 
-# Initial infestaiton levels 
-cv <- c(0.055, 0.025, .02) 
+# Did not follow IPM
+# Initial dissect levels
+# Field-level AB live: 13.5%
+#             AB Dead: 22.5%
+#                  CD: 9%
+
+cv <- c(0.135, .225, .09) 
 cv[4] <- 1 - sum(cv)
+
+
+# Followed IPM
+# Initial dissect levels
+# Field-level AB live: 5.5%
+#             AB Dead: 2.5%
+#                  CD: 2%
+
+# cv <- c(0.055, 0.025, .02) 
+# cv[4] <- 1 - sum(cv)
 #new_cv <- cv  
 
 # Get calibrated markov chains
