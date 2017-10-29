@@ -31,9 +31,9 @@ cv[4] <- 1 - sum(cv)
 #             AB Dead: 2.5%
 #                  CD: 2%
 
-# cv <- c(0.055, 0.025, .02) 
-# cv[4] <- 1 - sum(cv)
-#new_cv <- cv  
+cv <- c(0.055, 0.025, .02)
+cv[4] <- 1 - sum(cv)
+new_cv <- cv
 
 # Get calibrated markov chains
 calibration_type <- "field"
@@ -57,6 +57,7 @@ cherryonfarm <- cherryonfarm[3:12]
 # Convert to field level
 #---------------------------------------
 # Dynamic optimization problem
+thold <- data.frame()
 
 for (i in 1:9){
   
@@ -66,7 +67,43 @@ for (i in 1:9){
   # Calculate decision and infestation values
   #decsion_type <- "cost"
   choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], cv)
-  #choice <- 1
+
+  # Calculate threshold in decision
+  rg <- range(0, cv[3] + .10)
+  srg <- seq(0, cv[3], by = 0.001)
+  
+  tdat <- data.frame()
+  for (j in srg){
+    for (k in c(1,2)){
+    
+    #threshold[1] <- threshold[1] + j
+    #threshold[2] <- threshold[2] + j
+    if (k == 1){
+      threshold <- cv
+      threshold[3] <- threshold[3] - j
+    }
+    if (k == 2){
+      threshold <- cv
+      threshold[3] <- threshold[3] + j
+    }
+    
+    threshold[4] <- 1 - sum(threshold[1:3])
+    
+    threshold_choice <- decision(cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], threshold)
+    mdat <- data.frame(choice = threshold_choice,
+                       ABL_threshold = threshold[1],
+                       ABD_threshold = threshold[2],
+                       CD_threshold = threshold[3],
+                       NI_threshold = threshold[4])
+    tdat <- rbind(tdat, mdat)
+    }}
+  
+  tdat <- arrange(tdat, CD_threshold)
+  tdat
+  which(tdat$choice == 1)[1]
+  thold <- rbind(thold, tdat[which(tdat$choice == 1)[1], ])
+  thold
+  
   # Get new current infestation values based on spray decision
   new_cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + (1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][])
   
@@ -110,16 +147,26 @@ for (i in 1:9){
   }
 }
 
-totalnb
-#totalnb <- round(totalnb, 2)
-# saveRDS(totalnb, "data/totalnb.rds")
-totalnb
-sum(totalnb$nb)
-sum(totalnb$harvest_c)
-15000*harvestpercentages
-totalnb$model <- "Economic Model"
-totalnb$field_ablive <- totalnb$field_ablive*100
-totalnb$field_abdead <- totalnb$field_abdead*100
-totalnb$field_cd <- totalnb$field_cd*100
+# totalnb
+# #totalnb <- round(totalnb, 2)
+# # saveRDS(totalnb, "data/totalnb.rds")
+# totalnb
+# sum(totalnb$nb)
+# sum(totalnb$harvest_c)
+# 15000*harvestpercentages
+# totalnb$model <- "Economic Model"
+# totalnb$field_ablive <- totalnb$field_ablive*100
+# totalnb$field_abdead <- totalnb$field_abdead*100
+# totalnb$field_cd <- totalnb$field_cd*100
+# 
+# saveRDS(totalnb, "results/dynamicmodel.rds")
 
-saveRDS(totalnb, "results/dynamicmodel.rds")
+thold$Month <- 3:11
+thold
+
+ggplot(thold, aes(Month, CD_threshold*100)) + 
+  geom_line(data = totalnb, aes(Month, field_cd*100), color = "red") +
+  geom_line(linetype = "dashed") + 
+  
+  theme_tufte()
+  

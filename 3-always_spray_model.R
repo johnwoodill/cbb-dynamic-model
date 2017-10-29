@@ -102,3 +102,4 @@ sum(mat$nb)
 mat
 mat$model <- "Always Spray"
 saveRDS(mat, "results/alwaysspray.rds")
+sum(mat$nb)

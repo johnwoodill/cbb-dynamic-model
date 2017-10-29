@@ -15,6 +15,11 @@
 #' returns 0
 #' 
 
+cost_s = cost_s
+cherry = cherryonfarm[i]
+nsp_matrix = nsp_mcListFit$estimate[[i]][]
+cv = threshold
+
 decision <- function(cost_s, cherry, nsp_matrix, cv){
   # Determine whether to spray/not spray
   # If damage > cost to spray then spray

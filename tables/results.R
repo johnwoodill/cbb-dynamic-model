@@ -112,12 +112,12 @@ res.plot
 res.plot$key <- factor(res.plot$key)
 p2 <- ggplot(res.plot, aes(month, value, color = Model)) + 
   geom_line() + theme_tufte(base_size = 14) +
-  ggtitle("Final Field Infestation Level") + 
+  #ggtitle("Final Field Infestation Level") + 
   ylab("%") + xlab("Month") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_x_continuous(breaks = c(3:12)) + 
-  scale_y_continuous(breaks = c(5, 10, 15, 20)) +
+  scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50, 60)) +
   geom_label_repel(data = filter(res.plot, month == 12), aes(label = value),
                      na.rm = TRUE, show.legend = FALSE) +
   theme(legend.position = "top", legend.title = element_blank()) + facet_wrap(~key)
