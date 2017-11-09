@@ -3,7 +3,7 @@
 
 
 # Model parameters
-cost_s <- 180                                                # Cost to spray
+cost_s <- 107                                               # Cost to spray
 cost_h <- .5                                                 # Cost to harvest per pound of cherry
 harvestpercentages <- c(0, 0, 0, 0, 0, 0, 0.32, 0.48, 0.12, 0.08) # Harvested Proportion
 harvestschedule <- c(0, 0, 0, 0, 0, 0, 1, 1, 1, 1)     # Harvest schedule 0-No Harvest  1-Harvest

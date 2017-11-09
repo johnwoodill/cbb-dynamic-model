@@ -51,13 +51,13 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
   
   # Return maximized net benefit
   dat <- data.frame(Month = i+2, 
+                    spray = choice, 
                     field_ablive = cv[1], 
                     field_abdead = cv[2], 
                     field_cd = cv[3], 
-                    spray = choice, 
                     inf = cv[1] + cv[2] + cv[3],
                     ni = cv[4],
-                    chart = NA,
+                    #chart = NA,
                     price = p, 
                     nsp_damage = nsp_damage,
                     cd_damage = cv[3]*cherry_on_farm*p, 
