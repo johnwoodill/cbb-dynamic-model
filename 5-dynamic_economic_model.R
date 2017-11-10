@@ -157,8 +157,8 @@ for (i in 1:9){
 }
 
 totalnb
-# #totalnb <- round(totalnb, 2)
-# # saveRDS(totalnb, "data/totalnb.rds")
+#totalnb <- round(totalnb, 2)
+# saveRDS(totalnb, "data/totalnb.rds")
 # totalnb
 # sum(totalnb$nb)
 # sum(totalnb$harvest_c)
@@ -169,27 +169,28 @@ totalnb
 # totalnb$field_cd <- totalnb$field_cd*100
 # 
 # saveRDS(totalnb, "results/dynamicmodel.rds")
-
-thold$Month <- 3:11
-thold
-
-ggplot(thold, aes(Month, CD_threshold*100)) + 
-  geom_line(data = totalnb, aes(Month, field_cd*100), color = "red") +
-  geom_line(linetype = "dashed") + 
-  geom_point(data = filter(totalnb, spray == 1), aes(Month, field_cd*100)) +
-  theme_tufte() +
-  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  scale_x_continuous(breaks = 3:12) +
-  scale_y_continuous(breaks = 0:12) +
-  ylab("Field-level \n CD Infestation") +
-  scale_colour_manual(name = 'the colour', 
-         values =c('black'='black','red'='red'), labels = c('c2','c1')) +
-  theme(legend.position = c(0,1), 
-        legend.justification = c("left", "top"), 
-        legend.box.background = element_rect(colour = "grey"), 
-        legend.title = element_blank(), legend.key = element_blank())  +
-  annotate("text", x = 4, y = 10, label = "Threshold") +
-  annotate("text", x = 3.5, y = 5, label = "Farm Infestation", color = "red")
-  
+# 
+# thold$Month <- 3:11
+# thold
+# 
+# ggplot(thold, aes(Month, CD_threshold*100)) + 
+#   geom_line(data = totalnb, aes(Month, field_cd*100), color = "red") +
+#   geom_line(linetype = "dashed") + 
+#   geom_point(data = filter(totalnb, spray == 1), aes(Month, field_cd*100)) +
+#   theme_tufte() +
+#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#   scale_x_continuous(breaks = 3:12) +
+#   scale_y_continuous(breaks = 0:12) +
+#   ylab("Field-level \n CD Infestation") +
+#   scale_colour_manual(name = 'the colour', 
+#          values =c('black'='black','red'='red'), labels = c('c2','c1')) +
+#   theme(legend.position = c(0,1), 
+#         legend.justification = c("left", "top"), 
+#         legend.box.background = element_rect(colour = "grey"), 
+#         legend.title = element_blank(), legend.key = element_blank())  +
+#   annotate("text", x = 4, y = 10, label = "Threshold") +
+#   annotate("text", x = 3.5, y = 5, label = "Farm Infestation", color = "red")
+#   
+  totalnb
   

@@ -38,6 +38,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
     harvest_check[2] <- ifelse(check >= harvest_check[1], j, harvest_check[2])
   }}
   
+  harvested <- (harvest_check[2]) * (1 - cv[3]) - harvestedcherry
   nb <- h * p * (harvest_check[2]) * (1 - cv[3]) - cost_s*choice - h * cost_h * (harvest_check[2]) 
   
   nsp_damage <- 0
@@ -63,7 +64,8 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
                     cd_damage = cv[3]*cherry_on_farm*p, 
                     cost = cost_s, 
                     harvest_s = h, 
-                    harvest_c = h*harvest_check[2], 
+                    harvest_c = h*harvested, 
+                    
                     harvest_p = round(h*harvest_check[2]/(acres*cherry_per_acre),2), 
                     nb = nb)
   return(dat)

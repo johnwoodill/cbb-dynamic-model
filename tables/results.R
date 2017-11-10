@@ -4,24 +4,18 @@ library(ggrepel)
 library(ggthemes)
 
 # Load results
-as <- readRDS("results/alwaysspray.rds")
-ipm <- readRDS("results/ipmspray.rds")
 dp <- readRDS("results/dynamicmodel.rds")
 
-names(as)
-names(ipm)
 names(dp)
 
-as <- select(as, Month, field_ablive, field_abdead, field_cd, inf, spray, harvest_c, price, model, nb)
-ipm <- select(ipm, Month, field_ablive, field_abdead, field_cd, inf, spray, harvest_c, price, model, nb)
 dp <- select(dp, Month, field_ablive, field_abdead, field_cd, inf, spray, harvest_c, price, model, nb)
-
-results <- rbind(as, ipm, dp)
 
 head(results)
 results[,c(1:8, 10)] <- round(results[,c(1:8, 10)], 2)
 
-latex(tabular((factor(Month))~Format(digits = 5)* Heading()*factor(model)*(Format(digits = 1)*(spray + Format(digist = 5)*nb)*Heading()*identity), data = results, options = list(titlerule = "\\cmidrule(lr)")))
+latex(tabular((factor(Month))~Format(digits = 5)*Heading()*(Month + spray + field_ablive + Format(digits = 6)*nb)*Heading()*identity, data = dp))
+
+latex(tabluar(factor(Month))~Format(digist = 5)*Heading()*(Month + spray)*identity, data = dp)
 
 # Followed IPM Results
 #########################################
