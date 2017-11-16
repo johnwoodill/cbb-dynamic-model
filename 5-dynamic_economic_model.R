@@ -22,8 +22,8 @@ source("1-parameters.R")
 #             AB Dead: 22.5%
 #                  CD: 9%
 # 
-# cv <- c(0.135, .225, .09)
-# cv[4] <- 1 - sum(cv)
+cv <- c(0.135, .225, .1)
+cv[4] <- 1 - sum(cv)
 
 
 # Followed IPM
@@ -32,8 +32,8 @@ source("1-parameters.R")
 #             AB Dead: 2.5%
 #                  CD: 2%
 
-cv <- c(0.055, 0.025, .02)
-cv[4] <- 1 - sum(cv)
+# cv <- c(0.055, 0.025, .02)
+# cv[4] <- 1 - sum(cv)
 # new_cv <- cv
 
 # Get calibrated markov chains
