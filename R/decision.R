@@ -28,10 +28,9 @@ decision <- function(acres, cost_s, cherry, nsp_matrix, sp_matrix, cv){
   spray <- cv %*% sp_mcListFit$estimate[[i]][]
   
   nspray_growth <- nspray[3] - cv[3]
-  #nspray_growth <- nspray[3] - spray[3]
-  nsp_damage <- nspray_growth * cherry * cherrypricing(nspray[3])
+  nsp_damage <- nspray_growth * (cherryonfarm[i + 1] * cv[4]) * cherrypricing(nspray[3])
   
   # Get decision : 1 (spray), 0 (no spray)
-  dec <- ifelse(nsp_damage >= cost_s, 1, 0)
+  dec <- ifelse(nsp_damage >= cost_s*acres, 1, 0)
   return(dec)
 }

@@ -39,7 +39,7 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
   }}
   
   harvested <- (harvest_check[2]) * (1 - cv[3]) - harvestedcherry
-  nb <- h * p * (harvest_check[2]) * (1 - cv[3]) - cost_s*choice - h * cost_h * (harvest_check[2]) 
+  nb <- h * p * (harvest_check[2]) * (1 - cv[3]) - cost_s*choice - h * cost_h * (harvest_check[2])
   
   nsp_damage <- 0
   
@@ -49,6 +49,15 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
       nspray_growth <- nspray[3] - cv[3]
       nsp_damage <- nspray_growth * cherry_on_farm * cherrypricing(nspray[3])
   }
+  
+  # Harvested proportion
+  harvest_p = round(h*harvest_check[2]/(acres*cherry_per_acre),2)
+  
+  # Total harvested cherry
+  harvest_cherry = harvest_p*acres*cherry_per_acre
+  
+  # Optimal harvested cherry
+  harvest_c = h*harvested
   
   # Return maximized net benefit
   dat <- data.frame(Month = i+2, 
@@ -63,10 +72,12 @@ maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harves
                     nsp_damage = nsp_damage,
                     cd_damage = cv[3]*cherry_on_farm*p, 
                     cost = cost_s, 
-                    harvest_s = h, 
-                    harvest_c = h*harvested, 
-                    
-                    harvest_p = round(h*harvest_check[2]/(acres*cherry_per_acre),2), 
+                    harvest_s = h,
+                    harvest_p = round(h*harvest_check[2]/(acres*cherry_per_acre),2),
+                    harvest_cherry = harvest_cherry,
+                    harvest_damage = harvest_cherry - harvest_c,
+                    harvest_c_d = harvest_c,
+                    harvest_cost = h * cost_h * (harvest_check[2]),
                     nb = nb)
   return(dat)
 }
