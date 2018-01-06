@@ -67,6 +67,7 @@ thold_search <- function(x){
       #ifelse(ret >= 0, ret, 9999)
 }
 
+# Threshold from USDA data
 dat <- data.frame()
 for (i in 1:9){
   optvalue <- optim(c(infdat[i, 1]), thold_search,
@@ -79,3 +80,42 @@ for (i in 1:9){
   dat <- rbind(dat, thold)
 }
 dat
+
+sdat <- data.frame()
+for(j in seq(-0.10,0.10, 0.001)){
+  dinfdat <- data.frame(abl = infdat$abl*j,
+                        abd = infdat$abd*j,
+                        cd = infdat$cd*j)
+
+for (i in 1:9){
+  optvalue <- optim(c(dinfdat[i, 1]), thold_search,
+      lower = 0, upper = 1, method = "L-BFGS-B")
+  optvalue
+  thold <- data.frame(month = i + 2,
+                      ABLive = optvalue$par[1],
+                      ABDead =  infdat[i, 2],
+                      CD = infdat[i, 3])
+  sdat <- rbind(dat, thold)
+}
+dat
+
+
+
+
+ggplot(dat, aes(month, 100*CD)) + geom_line() + ylim(0, 10) + 
+  theme_tufte(base_size = 10) +
+  ylab("% C/D Infestation") +
+  xlab("Month") +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
+  annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+  scale_x_continuous(breaks = 3:11)
+  
+# theme(legend.position = "top", 
+       #legend.justification = c("left", "top"), 
+       # legend.box.background = element_rect(colour = "grey"), 
+       # legend.title = element_blank(), legend.key = element_blank()) +
+  #theme(legend.position = c(.85,1), 
+  #     legend.justification = c("left", "top"), 
+  #     legend.box.background = element_rect(colour = "grey"), 
+  #     legend.title = element_blank(), legend.key = element_blank()) +
+  # geom_hline(yintercept = 0, linetype = "dashed", color = "grey", alpha = 0.5)

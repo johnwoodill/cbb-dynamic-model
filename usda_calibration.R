@@ -21,9 +21,9 @@ usda$month <- month(usda$date)
 #usda[is.na(usda)] <- 0
 usda
 ## Subset farms that sprayed throughout the year
-usda <- filter(usda, site == "Kelleher" | site == "O'Neill")
+# usda <- filter(usda, site == "Kelleher" | site == "O'Neill")
 # usda <- filter(usda, site == "Kelleher Farm" | site == "O'Neill Farm")
-#sda <- filter(usda, site == "Kelleher")
+usda <- filter(usda, site == "Kelleher")
 #usda <- filter(usda, site == "O'Neill")
 usda <- filter(usda, total_dissected != 0)
 
