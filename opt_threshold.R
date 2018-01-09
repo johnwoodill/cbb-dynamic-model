@@ -50,66 +50,129 @@ source("3-dynamic_economic_model.R")
 
 infdat <- data.frame(abl = totalnb$field_ablive,
                      abd = totalnb$field_abdead,
-                     cd = totalnb$field_cd)
+                     cd = totalnb$field_cd,
+                     ni = totalnb$ni)
+
+decisions <- totalnb$spray
 
 thold_search <- function(x){
-      threshold <- c(x[1], infdat[i, 2], infdat[i, 3])
-      threshold[4] <- 1 - sum(threshold[1:3])
-      nspray <- threshold %*% nsp_mcListFit$estimate[[i]][]
-      nspray_growth <- nspray[3] - threshold[3]
+      # threshold <- as.numeric(c(x[1]))
+      # threshold[4] <- 1 - sum(threshold[1:3])
+      # nspray <- threshold %*% nsp_mcListFit$estimate[[i]][]
+      # spray <- threshold %*% sp_mcListFit$estimate[[i]][]
+      # B <- nspray[3] - spray[3]
+      # nspray_growth <- nspray[3] - threshold[3]
+      # nsp_damage <- nspray_growth * (cherryonfarm[i]*threshold[4]) * cherrypricing(nspray[3])
       
-      nsp_damage <- nspray_growth * (cherryonfarm[i]*threshold[4]) * cherrypricing(nspray[3])
+      # damage <- B * ( cherryonfarm[i] * threshold[4] ) * cherrypricing(threshold[3])
       
       # Get decision : 1 (spray), 0 (no spray)
-      ifelse(nsp_damage >= cost_s*acres, 
-             ifelse(sum(threshold[1:3]) <= 1, nsp_damage - cost_s*acres, 99999), 99999)
+      # if(nspray[1] <= infdat[i, 1]*1.20){
+      # sum(ifelse(nsp_damage >= cost_s*acres,
+             # ifelse(sum(threshold[1:3]) <= 1, nsp_damage - cost_s*acres, 99999), 99999))
+      # }
+      # ifelse(damage >= cost_s*acres, 
+             # ifelse(sum(threshold[1:3]) <= 1, damage - cost_s*acres, 99999 ), 99999 )
+      
       #nsp_damage - (cost_s*acres)
       #ifelse(ret >= 0, ret, 9999)
+      
+      damage <- (x[1] - infdat[i, 3])* cherryonfarm[i] * infdat[i, 4] * totalnb$price[i]
+      sum(abs(damage - cost_s*acres))
+      
+       # if(decisions[i] == 0){
+      #   damage <- (x[1] - infdat[i, 3])* cherryonfarm[i] * infdat[i, 4] * totalnb$price[i]
+      #   sum(abs(damage - cost_s*acres))
+      #   # ifelse(damage == cost_s*acres, 0, abs(damage - cost_s*acres))
+      # }
+      # 
+      # if(decisions[i] == 1){
+      #   damage <- (infdat[i, 3] - x[1])* cherryonfarm[i] * infdat[i, 4] * totalnb$price[i]
+      #   sum(abs(damage - cost_s*acres))
+      #   # ifelse(damage == cost_s*acres, 0, abs(damage - cost_s*acres))
+      # }
 }
 
 # Threshold from USDA data
 dat <- data.frame()
-for (i in 1:9){
-  optvalue <- optim(c(infdat[i, 1]), thold_search,
-      lower = 0, upper = 1, method = "L-BFGS-B")
-  optvalue
+for (i in 1:10){
+  
+  if(decisions[i] == 0){
+  optvalue <- optim(c(infdat[i, 3]), thold_search,
+      lower = infdat[i, 3], upper = 1, method = "L-BFGS-B" )
   thold <- data.frame(month = i + 2,
-                      ABLive = optvalue$par[1],
+                      ABLive = infdat[i, 1],
                       ABDead =  infdat[i, 2],
-                      CD = infdat[i, 3])
+                      CD = optvalue$par[1] + infdat[i, 3],
+                      Base_CD = infdat[i, 3])
+  } 
+  
+  if(decisions[i] == 1){
+  optvalue <- optim(c(infdat[i, 3]), thold_search,
+      lower = 0, upper = infdat[i, 3], method = "L-BFGS-B" )
+  thold <- data.frame(month = i + 2,
+                      ABLive = infdat[i, 1],
+                      ABDead =  infdat[i, 2],
+                      CD = optvalue$par[1] - infdat[i, 3],
+                      Base_CD = infdat[i, 3])
+  } 
+  
+  optvalue
+
   dat <- rbind(dat, thold)
 }
 dat
 
-sdat <- data.frame()
-for(j in seq(-0.10,0.10, 0.001)){
-  dinfdat <- data.frame(abl = infdat$abl*j,
-                        abd = infdat$abd*j,
-                        cd = infdat$cd*j)
 
-for (i in 1:9){
-  optvalue <- optim(c(dinfdat[i, 1]), thold_search,
-      lower = 0, upper = 1, method = "L-BFGS-B")
-  optvalue
-  thold <- data.frame(month = i + 2,
-                      ABLive = optvalue$par[1],
-                      ABDead =  infdat[i, 2],
-                      CD = infdat[i, 3])
-  sdat <- rbind(dat, thold)
-}
+
+# dat
+
+# sdat <- data.frame()
+# for(j in seq(-0.10,0.10, 0.001)){
+#   dinfdat <- data.frame(abl = infdat$abl*j,
+#                         abd = infdat$abd*j,
+#                         cd = infdat$cd*j)
+# 
+# for (i in 1:9){
+#   optvalue <- optim(c(dinfdat[i, 1]), thold_search,
+#       lower = 0, upper = 1, method = "L-BFGS-B")
+#   optvalue
+#   thold <- data.frame(month = i + 2,
+#                       ABLive = optvalue$par[1],
+#                       ABDead =  infdat[i, 2],
+#                       CD = infdat[i, 3])
+#   sdat <- rbind(dat, thold)
+# }}
+# dat
 dat
 
 
 
-
-ggplot(dat, aes(month, 100*CD)) + geom_line() + ylim(0, 10) + 
-  theme_tufte(base_size = 10) +
+ggplot(dat, aes(month, 100*CD)) + geom_line(linetype = "dashed") + 
+  # ylim(0, 15) +
+  geom_line(data = totalnb, aes(Month, 100*field_cd)) +
+  theme_tufte(base_size = 11) + 
   ylab("% C/D Infestation") +
   xlab("Month") +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  scale_x_continuous(breaks = 3:11)
+  scale_x_continuous(breaks = 3:12) +
+  # geom_hline(yintercept = 0, linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 3, y = dat[1, 4]*100 + 2, label = "Threshold") +
+  annotate("text", x = 3.2, y = dat[1, 5]*100 + 3, label = "Farm-level \n Infestation") +
+  annotate("text", x = 3, y = -1, label = "No Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 4, y = -1, label = "No Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 5, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 6, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 7, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 8, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 9, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 10, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 11, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 12, y = -1, label = "No Spray", alpha = 0.5, size = 3)
   
+  
+
 # theme(legend.position = "top", 
        #legend.justification = c("left", "top"), 
        # legend.box.background = element_rect(colour = "grey"), 
