@@ -55,6 +55,9 @@ infdat <- data.frame(abl = totalnb$field_ablive,
 
 decisions <- totalnb$spray
 
+
+
+
 thold_search <- function(x){
       # threshold <- as.numeric(c(x[1]))
       # threshold[4] <- 1 - sum(threshold[1:3])
