@@ -143,3 +143,5 @@ write_csv(totalnb, "results/poorly_managed_main_results.csv")
 
 
 saveRDS(totalnb, "results/poorly_managed_main_results.rds")
+
+totalnb$spray
