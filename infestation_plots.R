@@ -1,4 +1,12 @@
 library(tidyverse)
+library(ggthemes)
+library(cowplot)
+
+# Cherry growth 
+source("R/cherrygrowth.R")
+
+# Initiate parameters
+source("1-parameters.R")
 
 # pdat1 <- readRDS("results/well_managed_main_results.rds")
 # pdat2 <- readRDS("results/poorly_managed_main_results.rds")
@@ -16,6 +24,17 @@ library(tidyverse)
 #   
 # john_ggplot(plott) + theme(legend.position = "top", legend.title = element_blank())
 
+# Jan - Dec
+cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 1, r = .3)
+# ggplot(NULL, aes(cherryonfarm, x = 1:12)) + geom_line() + xlab("Month") +
+#   scale_x_continuous(breaks = 1:12) +
+#   ylab("lbs. of cherry") + theme_tufte(base_size = 14) + 
+#     annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
+#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#   ggtitle("Cherry Growth on 2-acre Farm from January to December")
+
+
+cherryonfarm <- cherryonfarm[3:12]
 
 # Result infestation levels with cherry growth
 pdat1 <- readRDS("results/well_managed_main_results.rds")
@@ -25,7 +44,7 @@ pdat1$farm <- "Well Managed"
 pdat2$farm <- "Poorly Managed"
 
 pdat <- rbind(pdat1, pdat2)
-pdat <- select(pdat, Month, field_ablive, field_abdead, field_cd, farm)
+pdat <- select(pdat, Month, field_ablive, field_abdead, field_cd, inf, farm)
 pdat1 <- filter(pdat, farm == "Well Managed")
 pdat2 <- filter(pdat, farm == "Poorly Managed")
 
@@ -33,6 +52,7 @@ p1 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line() +
   xlab("Month") +
   scale_x_continuous(breaks = 3:12) +
+  geom_line(data = pdat1, aes(y = inf*100000, x = Month), color = "blue") +
   geom_line(data = pdat1, aes(y = field_ablive*100000, x = Month), color = "red") +
   geom_line(data = pdat1, aes(y = field_abdead*100000, x = Month), color = "green") +
   geom_line(data = pdat1, aes(y = field_cd*100000, x = Month), color = "orange")  +
@@ -54,6 +74,7 @@ p2 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line() +
   xlab("Month") +
   scale_x_continuous(breaks = 3:12) +
+  geom_line(data = pdat1, aes(y = inf*100000, x = Month), color = "blue") +
   geom_line(data = pdat2, aes(y = field_ablive*100000, x = Month), color = "red") +
   geom_line(data = pdat2, aes(y = field_abdead*100000, x = Month), color = "green") +
   geom_line(data = pdat2, aes(y = field_cd*100000, x = Month), color = "orange")  +
