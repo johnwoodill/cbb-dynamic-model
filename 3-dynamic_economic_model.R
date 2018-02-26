@@ -191,6 +191,7 @@ totalnb
 #   annotate("text", x = 3.5, y = 5, label = "Farm Infestation", color = "red")
 #   
 totalnb
+sum(totalnb$nb)
 finalresults <- totalnb
 write_csv(totalnb, "results/well_managed_main_results.csv")
 saveRDS(totalnb, "results/well_managed_main_results.rds")

@@ -2,6 +2,8 @@ library(tidyverse)
 library(ggthemes)
 library(cowplot)
 
+setwd("/run/media/john/1TB/SpiderOak/Projects/cbb-dynamic-model/")
+
 # Cherry growth 
 source("R/cherrygrowth.R")
 
@@ -52,20 +54,20 @@ p1 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line() +
   xlab("Month") +
   scale_x_continuous(breaks = 3:12) +
-  geom_line(data = pdat1, aes(y = inf*100000, x = Month), color = "blue") +
-  geom_line(data = pdat1, aes(y = field_ablive*100000, x = Month), color = "red") +
-  geom_line(data = pdat1, aes(y = field_abdead*100000, x = Month), color = "green") +
-  geom_line(data = pdat1, aes(y = field_cd*100000, x = Month), color = "orange")  +
-  scale_y_continuous(sec.axis = sec_axis(~./1000, name = "Field-level Infestation (%)")) +
+  geom_line(data = pdat1, aes(y = inf*50000, x = Month), color = "blue") +
+  geom_line(data = pdat1, aes(y = field_ablive*50000, x = Month), color = "red") +
+  geom_line(data = pdat1, aes(y = field_abdead*50000, x = Month), color = "green") +
+  geom_line(data = pdat1, aes(y = field_cd*50000, x = Month), color = "orange")  +
+  scale_y_continuous(sec.axis = sec_axis(~./500, name = "Field-level Infestation (%)")) +
   geom_vline(xintercept = 9, linetype = "dashed", color = "grey") +
   ylab("lbs. of mature cherry") + theme_tufte(base_size = 14) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  annotate("text", x = 9.5, y = 21500, label = "Start of Harvest", color = "grey" ) +
-  annotate("text", x = 3.5, y = 21500, label = "Infestation", color = "blue" ) +
-  annotate("text", x = 4.5, y = 21500, label = "AB Live", color = "red") +
-  annotate("text", x = 5.5, y = 21500, label = "AB Dead", color = "green") +
-  annotate("text", x = 6.5, y = 21500, label = "CD", color = "orange") +
+  annotate("text", x = 9.5, y = 22500, label = "Start of Harvest", color = "grey" ) +
+  annotate("text", x = 3.5, y = 22500, label = "Infestation", color = "blue" ) +
+  annotate("text", x = 4.5, y = 22500, label = "AB Live", color = "red") +
+  annotate("text", x = 5.5, y = 22500, label = "AB Dead", color = "green") +
+  annotate("text", x = 6.5, y = 22500, label = "CD", color = "orange") +
   annotate("text", x = 11.5, y = 16000, label = "Mature Cherry", color = "black") +
   ggtitle("Well-managed Farm Infestation Levels") 
 p1
@@ -74,20 +76,20 @@ p2 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line() +
   xlab("Month") +
   scale_x_continuous(breaks = 3:12) +
-  geom_line(data = pdat1, aes(y = inf*100000, x = Month), color = "blue") +
-  geom_line(data = pdat2, aes(y = field_ablive*100000, x = Month), color = "red") +
-  geom_line(data = pdat2, aes(y = field_abdead*100000, x = Month), color = "green") +
-  geom_line(data = pdat2, aes(y = field_cd*100000, x = Month), color = "orange")  +
-  scale_y_continuous(sec.axis = sec_axis(~./1000, name = "Field-level Infestation (%)")) +
+  geom_line(data = pdat2, aes(y = inf*50000, x = Month), color = "blue") +
+  geom_line(data = pdat2, aes(y = field_ablive*50000, x = Month), color = "red") +
+  geom_line(data = pdat2, aes(y = field_abdead*50000, x = Month), color = "green") +
+  geom_line(data = pdat2, aes(y = field_cd*50000, x = Month), color = "orange")  +
+  scale_y_continuous(sec.axis = sec_axis(~./500, name = "Field-level Infestation (%)")) +
   geom_vline(xintercept = 9, linetype = "dashed", color = "grey") +
   ylab("lbs. of mature cherry") + theme_tufte(base_size = 14) +
   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-  annotate("text", x = 9.5, y = 21500, label = "Start of Harvest", color = "grey" ) +
-  annotate("text", x = 3.5, y = 21500, label = "Infestation", color = "blue" ) +
-  annotate("text", x = 4.5, y = 21500, label = "AB Live", color = "red") +
-  annotate("text", x = 5.5, y = 21500, label = "AB Dead", color = "green") +
-  annotate("text", x = 6.5, y = 21500, label = "CD", color = "orange") +
+  annotate("text", x = 9.5, y = 22500, label = "Start of Harvest", color = "grey" ) +
+  annotate("text", x = 4, y = 22500, label = "Infestation", color = "blue" ) +
+  annotate("text", x = 5, y = 22500, label = "AB Live", color = "red") +
+  annotate("text", x = 6, y = 22500, label = "AB Dead", color = "green") +
+  annotate("text", x = 7, y = 22500, label = "CD", color = "orange") +
   annotate("text", x = 11.5, y = 16000, label = "Mature Cherry", color = "black") +
   ggtitle("Poorly-managed Farm Infestation Levels") 
 p2
@@ -97,8 +99,8 @@ plot_grid(p1, p2, ncol = 1)
 
 
 
-
-# Markov calibrations
+##---
+## Markov calibrations
 source("2-calibrate_markov_chains.R")
 
 spray <- dat3
@@ -106,14 +108,12 @@ nospray <- dat4
 spray$type <- "Spray"
 nospray$type  <- "No Spray"
 spdat <- rbind(spray, nospray)
-spdat$notinf <- 100 - rowSums(spdat[, c("A", "B", "C")])
-spdat$inf <- rowSums(spdat[, c("A", "B", "C")])
 
 names(spdat)[1:3] <- c("AB Live", "AB Dead", "CD")
 spdat$month <- rep(c(3:12), 2)
 spdat <- gather(spdat, key = inf, value = value, -type, -month)
-spdat$inf <- factor(spdat$inf, levels = c("AB Dead", "AB Live", "CD", "inf", "notinf"), 
-                    labels = c("AB Dead", "AB Live", "CD", "Infested", "Not Infested"))
+spdat$inf <- factor(spdat$inf, levels = c("AB Dead", "AB Live", "CD", "INF"), 
+                    labels = c("AB Dead", "AB Live", "CD", "Infested"))
 
 splot <- ggplot(spdat, aes(month, value, color = type)) + geom_line() + facet_wrap(~inf) +
   ylab("% Field-level Infestation") +

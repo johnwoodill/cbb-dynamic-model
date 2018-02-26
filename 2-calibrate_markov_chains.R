@@ -5,164 +5,70 @@ source("R/markovcalibration.R")
 # Markov calibration
 #-------------------------------------------------------
 
-# Original matrices
-# Based on field level data and Luis understand meaning calibration based on USDA data
-# Spray calibration
-# Dissect level 
-# dat1 <- data.frame(month = 3:12,
-#                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 6, 3),      # A/B Live
-#                    B = rep(0, 10),                                   # A/B Dead
-#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),   # C/D Position
-#                    INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
-# dat1$NI <- 100 - dat1$INF
-# dat1$B <- 100-(dat1$A+dat1$C)
-# 
-# # No spray calibration (From luis)
-# # Dissect level
-# dat2 <- data.frame(month = 3:12,
-#                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-#                    B = rep(0, 10),                                    # A/B Dead
-#                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 88, 90),     # C/D Position
-#                    INF = c(43, 38, 33, 37, 41, 45, 48, 52, 56, 60))
-# dat2$B <- 100-(dat2$A+dat2$C)
-# dat2$NI <- 100 - dat2$INF
-
-# Check
-# dat1 <- data.frame(month = 3:12,
-#                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 7, 4 ),      # A/B Live
-#                    B = rep(0, 1),                                    # A/B Dead
-#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
-#                    INF = c(21, 17, 12, 8, 5, 6, 9, 10, 14, 17))
-# dat1$NI <- 100 - dat1$INF
-# dat1$B <- 100-(dat1$A+dat1$C)
+# From USDA calibration
+# dat3 <- structure(list(percent_ab_live = c(11.3965602251124, 4.86294082354106,
+# 2.69607629980722, 0.359477124183007, 0.283276384661366, 0.115273098776565,
+# 0.507092077478162, 0.18316266780577, 0.107342864291601), percent_ab_dead = c(0,
+# 0, 0, 0, 0.297524490141022, 0.383707788205918, 1.05803134390251,
+# 0.381172514557036, 1.08504111506613), percent_cd_live = c(0,
+# 0, 0, 0, 0.384317510598303, 1.21981331951074, 2.64082405717489,
+# 2.31680426543307, 10.1716918515493)), .Names = c("percent_ab_live",
+# "percent_ab_dead", "percent_cd_live"), row.names = c(NA, -9L), class = c("tbl_df",
+# "tbl", "data.frame"))
+#  
+# dat3$inf <- rowSums(dat3)
+# head(dat3)
+# dat3$month <- c(4:12)
+# dat3 <- gather(dat3, key = position, value = value, -month)
+# ggplot(dat3, aes(x = month, y =value, color = position)) + geom_line()
+# #------------------------------------------------------------
+# # Original matrices
+# # Based on field level data from Luis
+# # Spray calibration
+dat1 <- data.frame(month = 3:12,
+                   A = c(58, 69, 70, 48, 22, 5, 16, 10, 5, 3 ),      # A/B Live
+                   B = rep(0, 1),                                    # A/B Dead
+                   C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
+                  INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
+dat1$NI <- 100 - dat1$INF
+dat1$B <- 100-(dat1$A+dat1$C)
 
 # No spray calibration (From luis)
 # Dissect level
-# dat2 <- data.frame(month = 3:12,
-#                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-#                    B = rep(0, 10),                                    # A/B Dead
-#                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
-#                    INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
-# dat2$B <- 100-(dat2$A+dat2$C)
-# dat2$NI <- 100 - dat2$INF
+dat2 <- data.frame(month = 3:12,
+                   A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
+                   B = rep(0, 10),                                    # A/B Dead
+                   C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
+                  INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
+dat2$B <- 100-(dat2$A+dat2$C)
+dat2$NI <- 100 - dat2$INF
 
+dat3 <- data.frame(A = (dat1$A*dat1$INF)/100,
+                   B = (dat1$B*dat1$INF)/100,
+                   C = (dat1$C*dat1$INF)/100)
 
-# Based on field level data and Luis understand meaning calibration based on USDA data
-# Spray calibration
-# Dissect level 
-# dat1 <- data.frame(month = 3:12,
-#                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 5, 3 ),      # A/B Live
-#                    B = rep(0, 1),      # A/B Dead
-#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
-#                   INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
-# dat1$NI <- 100 - dat1$INF
-# dat1$B <- 100-(dat1$A+dat1$C)
+dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
+                   B = (dat2$B*dat2$INF)/100,
+                   C = (dat2$C*dat2$INF)/100)
+# dat3$D <- rowSums(dat3)
+# names(dat3) <- c("AB_LIVE", "AB_DEAD", "CD", "INF")
 # 
-# # No spray calibration (From luis)
-# # Dissect level
-# dat2 <- data.frame(month = 3:12,
-#                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-#                    B = rep(0, 10),             # A/B Dead
-#                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
-#                   INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
-# dat2$B <- 100-(dat2$A+dat2$C)
-# dat2$NI <- 100 - dat2$INF
+# dat4$D <- rowSums(dat4)
+# names(dat4) <- c("AB_LIVE", "AB_DEAD", "CD", "INF")
 
-# if (calibration_type  == "dissect"){
-#   
-#   
-# # Dissect level
-# #########################################
-# #
-# # Spray matrix for infestation rate
-# #
-# spi_mat <- dat1[,5:6]
-# names(spi_mat) <- c("I", "NI")
-# spi_mat
-# spi_mat <- as.data.frame(apply(spi_mat, 2, function(x) floor(x)))
-# spi_mat
-# spi_mcListFit <- markovcalibration(spi_mat)
-# spi_mcListFit
-# 
-# # Spray Infestation levels
-# sp_mat <- dat1
-# sp_mat <- sp_mat[,2:4]
-# sp_mat <- as.data.frame(apply(sp_mat, 2, function(x) floor(x)))
-# sp_mat
-# sp_mcListFit <- markovcalibration(sp_mat)
-# sp_mcListFit
-# 
-# #########################################
-# #
-# # No Spray matrix for infestation rate
-# #
-# nspi_mat <- dat2[,5:6]
-# names(nspi_mat) <- c("I", "NI")
-# nspi_mat
-# nspi_mat <- as.data.frame(apply(nspi_mat, 2, function(x) floor(x)))
-# nspi_mat
-# nspi_mcListFit <- markovcalibration(nspi_mat)
-# nspi_mcListFit
-# 
-# # No Spray Infestation levels
-# nsp_mat <- dat2
-# nsp_mat <- nsp_mat[,2:4]
-# nsp_mat <- as.data.frame(apply(nsp_mat, 2, function(x) floor(x)))
-# nsp_mat
-# nsp_mcListFit <- markovcalibration(nsp_mat)
-# nsp_mcListFit
-# }
-
-#-----------------------------
-# Field Level Calibration
-
-#if (calibration_type  == "field"){
-# Field Level
-# #   
-# dat3 <- data.frame(A = (dat1$A*dat1$INF)/100,
-#                    B = (dat1$B*dat1$INF)/100,
-#                    C = (dat1$C*dat1$INF)/100)
-# 
-# dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
-#                    B = (dat2$B*dat2$INF)/100,
-#                    C = (dat2$C*dat2$INF)/100)
-# 
-#--------------------------------------------------------------------------------------------------
-# dat3 <- data.frame(A = c(11,  9,  4,  2,  1,  1,  1,  1,  1,  1),    # A/B Live
-#                    B = c(5, 2, 1, 1, 1, 1, 1, 1, 2, 2),     # A/B Dead
-#                    C = c(5,  3,  2,  2,  1,  2,  3,  3, 10, 12))     # C/D Position
-# 
-# 
-# dat4 <- data.frame(A = c(35, 30, 22, 24, 22, 15, 12, 10,  7,  3),      # A/B Live
-#                    B = c(1, 2, 1, 1, 2, 2, 1, 2, 1, 4),                # A/B Dead
-#                    C = c(11, 11, 11, 16, 22, 32, 41, 49, 59, 75))
-# 
-#--------------------------------------------------------------------------------------------------
-
+# head(dat3)
 
 # FINAL RESULTS FOR PAPER FOR DRAFT DO NOT DELETE
-#--------------------------------------------------------------------------------------------------
-# dat3 <- data.frame(A = c(12.18, 11.97, 11.50, 10.44, 9.22, 8.10, 6.64, 4.30, 2.66, 1.39),    # A/B Live
-#                    B = c(4.62, 3.17, 2.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead
-#                    C = c(0.20, 1.46, 1.90, 3.35, 4.48, 6.46, 7.56, 8.19, 9.24, 11.18))     # C/D Position
+# dat3 <- data.frame(A = c(12.18, 11.97, 11.50, 10.44, 9.22, 8.10, 6.64, 4.30, 2.66, 1.39), # A/B Live
+#                     B = c(4.62, 3.17, 2.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead
+#                     C = c(0.20, 1.46, 1.90, 3.35, 4.48, 6.46, 7.56, 8.19, 9.24, 11.18))    # C/D Position
 # 
 # 
-# dat4 <- data.frame(A = c(33.82, 26.22, 21.78, 22.20, 19.68, 18.50, 16.56, 15.32, 13.60, 11.80),      # A/B Live
-#                    B = c(0.43, 1.52, 0.33, 0.37, 1.64, 1.80, 0.48, 1.04, 0.56, 2.40),                # A/B Dead
-#                    C = c(5.75, 8.26, 9.89, 13.43, 21.68, 29.70, 36.96, 44.64, 50.84, 60)) 
-# 
-#--------------------------------------------------------------------------------------------------
- 
-
- dat3 <- data.frame(A = c(12.18, 11.97, 11.50, 10.44, 9.22, 8.10, 6.64, 4.30, 2.66, 1.39), # A/B Live
-                    B = c(4.62, 3.17, 2.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead
-                    C = c(0.20, 1.46, 1.90, 3.35, 4.48, 6.46, 7.56, 8.19, 9.24, 11.18))    # C/D Position
-
-
- dat4 <- data.frame(A = c(33.82, 26.22, 21.78, 22.20, 19.68, 18.50, 16.56, 15.32, 13.60, 11.80),      # A/B Live
-                    B = c(0.43, 1.52, 0.33, 0.37, 1.64, 1.80, 0.48, 1.04, 0.56, 2.40),                # A/B Dead
-                    C = c(5.75, 8.26, 9.89, 13.43, 21.68, 29.70, 36.96, 44.64, 50.84, 60))
-
+# dat4 <- data.frame(A = c(33.82, 26.22, 21.78, 22.20, 19.68, 13.50, 10.56, 5.32, 3.60, 1.80),      # A/B Live
+#                     B = c(0.43, 1.52, 0.33, 0.37, 1.64, 1.80, 0.48, 1.04, 0.56, 2.40),                # A/B Dead
+#                     C = c(5.75, 8.26, 9.89, 13.43, 21.68, 29.70, 36.96, 44.64, 50.84, 60))
+#   
+# inf <- rowSums(dat3)
 #########################################
 #
 # Spray matrix for infestation rate Ab live AB dead CD and NI

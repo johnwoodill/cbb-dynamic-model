@@ -41,20 +41,25 @@ kona <- filter(dat, Region == "Kona")
 kona <- filter(kona, year == "2015")
 
 # Subset Haawiian Queen (n=38)
-kona <- filter(kona, FarmName == "Hawaiian Queen")
-
+# kona <- filter(kona, FarmName == "Hawaiian Queen")
+# 
 # Average monthly data
 kona2 <- kona %>% 
   group_by(month) %>% 
   summarise(avg_AB_Dead = mean(AB_Dead, na.rm = TRUE),
             avg_AB_Live = mean(AB_Live, na.rm = TRUE),
             avg_Absent = mean(Absent, na.rm = TRUE),
-            avg_CD = mean(CD, na.rm = TRUE))
+            avg_CD = mean(CD, na.rm = TRUE),
+            avg_inf = mean(CBBinf, na.rm = TRUE))
+(kona2$avg_AB_Dead/100)*(kona2$avg_inf/100)
+(kona2$avg_CD/100)*(kona2$avg_inf/100)*100
+(kona2$avg_AB_Dead/100)*(kona2$avg_inf/100)
+
 
 kona2 <- as.data.frame(kona2)
   
 # Wide to long format
-kona2 <- gather(kona2, key = month, value = value)
+kona2 <- gather(kona2, key = position, value = value, -month)
 
 # Data setup
 names(kona2) <- c("month", "position", "value")

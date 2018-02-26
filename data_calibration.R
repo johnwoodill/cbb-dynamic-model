@@ -40,27 +40,36 @@ dat2$NI <- 100 - dat2$INF
 # dat2$B <- 100-(dat2$A+dat2$C)
 # dat2$NI <- 100 - dat2$INF
 
+dat1$A <- (dat1$A*dat1$INF)/100
+dat1$B <- (dat1$B*dat1$INF)/100
+dat1$C <- (dat1$C*dat1$INF)/100
+
+dat2$A <- (dat2$A*dat2$INF)/100
+dat2$B <- (dat2$B*dat2$INF)/100
+dat2$C <- (dat2$C*dat2$INF)/100
+
+
 # Plot
 newdat1 <- dat1[, 1:4]
 names(newdat1) <- c("month", "AB_LIVE", "AB_DEAD", "CD")
 newdat1 <- gather(newdat1, key, value, -month)
 newdat1$key <- factor(newdat1$key)
-p1 <- ggplot(newdat1, aes(month, value, color = key)) + geom_line() + ggtitle("Spray") + ylab("% Dissected Berries") + scale_x_continuous(breaks = c(3:12))
+p1 <- ggplot(newdat1, aes(month, value, color = key)) + geom_line() + ggtitle("Spray") + ylab("% Field-level Inf") + scale_x_continuous(breaks = c(3:12))
 p1
 
 newdat2 <- dat2[, 1:4]
 names(newdat2) <- c("month", "AB_LIVE", "AB_DEAD", "CD")
 newdat2 <- gather(newdat2, key, value, -month)
 newdat2$key <- factor(newdat2$key)
-p2 <- ggplot(newdat2, aes(month, value, color = key)) + geom_line() + ggtitle("No Spray") + ylab("% Dissected Berries")+ scale_x_continuous(breaks = c(3:12))
+p2 <- ggplot(newdat2, aes(month, value, color = key)) + geom_line() + ggtitle("No Spray") + ylab("% Field-level Inf")+ scale_x_continuous(breaks = c(3:12))
 p2
 
 newdat3 <- dat1[, c(1,5)]
-p3 <- ggplot(newdat3, aes(month, INF)) + geom_line() + ggtitle("Spray \n Field Level Infestation") + ylab("% Berries in Field") + scale_x_continuous(breaks = c(3:12))
+p3 <- ggplot(newdat3, aes(month, INF)) + geom_line() + ggtitle("Spray \n Field Level Infestation") + ylab("% Field-level Inf") + scale_x_continuous(breaks = c(3:12))
 p3
 
 newdat4 <- dat2[, c(1,5)]
-p4 <- ggplot(newdat4, aes(month, INF)) + geom_line() + ggtitle("No Spray - Field Level Infestation") + ylab("% Berries in Field") + scale_x_continuous(breaks = c(3:12))
+p4 <- ggplot(newdat4, aes(month, INF)) + geom_line() + ggtitle("No Spray - Field Level Infestation") + ylab("% Field-level Inf") + scale_x_continuous(breaks = c(3:12))
 p4
 
 plot_grid(p1, p2, ncol = 1)

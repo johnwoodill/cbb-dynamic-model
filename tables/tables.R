@@ -200,7 +200,7 @@ cat(stab6, file = "tables.tex", sep = "\n", append = TRUE)
 # cat(stab8, file = "tables.tex", sep = "\n", append = TRUE)
 cat("\\end{document}", file = "tables.tex", append = TRUE)
 # Compile pdf
-# system("pdflatex tables.tex")
+system("pdflatex tables.tex")
 
 }
 
@@ -212,7 +212,7 @@ cat("\\end{document}", file = "tables.tex", append = TRUE)
 # 
 # tabular(tab1)
 # 
-# names(dp)
+# names(dp)writw
 # 
 # dp <- select(dp, Month, field_ablive, field_abdead, field_cd, inf, spray, harvest_c, price, model, nb)
 # 

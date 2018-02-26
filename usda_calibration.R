@@ -21,10 +21,10 @@ usda$month <- month(usda$date)
 #usda[is.na(usda)] <- 0
 usda
 ## Subset farms that sprayed throughout the year
-# usda <- filter(usda, site == "Kelleher" | site == "O'Neill")
+usda <- filter(usda, site == "Kelleher" | site == "O'Neill")
 # usda <- filter(usda, site == "Kelleher Farm" | site == "O'Neill Farm")
-usda <- filter(usda, site == "Kelleher")
-#usda <- filter(usda, site == "O'Neill")
+# usda <- filter(usda, site == "Kelleher")
+# usda <- filter(usda, site == "O'Neill")
 usda <- filter(usda, total_dissected != 0)
 
 # Dissect Level
@@ -108,7 +108,8 @@ p2
 p3 <- ggplot(newdat, aes(month, percent_cd_live)) + geom_line() + ggtitle("CD")+ scale_x_continuous(breaks = 3:12)  
 #+ geom_line(aes(month, percent_cd_live_high), linetype = "dotted")+ geom_line(aes(month, percent_cd_live_low), linetype = "dotted")
 p3
-plot_grid(p1,p2,p3, ncol = 2)
+p4 <- ggplot(newdat, aes(month, percent_inf)) + geom_line() + ggtitle("Inf")+ scale_x_continuous(breaks = 3:12)  
+plot_grid(p1,p2,p3, p4, ncol = 2)
 
 newdat
 
