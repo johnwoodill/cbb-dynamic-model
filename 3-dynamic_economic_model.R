@@ -32,7 +32,7 @@ source("1-parameters.R")
 #             AB Dead: 2.5%
 #                  CD: 2%
 
-cv <- c(0.055, 0.025, .01)
+cv <- c(0.055, 0.025, .03)
 cv[4] <- 1 - sum(cv)
 new_cv <- cv
 
@@ -44,7 +44,7 @@ source("2-calibrate_markov_chains.R")
 source("R/cherrygrowth.R")
 
 # Jan - Dec
-cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 1, r = .3)
+cherryonfarm <- cherrygrowth(-12:12, acres*cherry_per_acre, beta = 1, r = .3)
 # ggplot(NULL, aes(cherryonfarm, x = 1:12)) + geom_line() + xlab("Month") +
 #   scale_x_continuous(breaks = 1:12) +
 #   ylab("lbs. of cherry") + theme_tufte(base_size = 14) + 
@@ -65,7 +65,7 @@ for (i in 1:9){
   
   # Calculate decision and infestation values
   #decsion_type <- "cost"
-  choice <- decision(acres, cost_s, cherryonfarm[i]*cv[4], nsp_mcListFit$estimate[[i]][], 
+  choice <- decision(acres, cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], 
                      sp_mcListFit$estimate[[i]][], cv)
 
   # Calculate threshold in decision

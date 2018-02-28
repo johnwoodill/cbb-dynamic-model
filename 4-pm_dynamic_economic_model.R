@@ -22,7 +22,7 @@ source("1-parameters.R")
 #             AB Dead: 22.5%
 #                  CD: 9%
 # 
-cv <- c(0.135, .10, .10)
+cv <- c(0.33, .01, .10)
 cv[4] <- 1 - sum(cv)
 
 # Get calibrated markov chains
@@ -34,34 +34,34 @@ source("R/cherrygrowth.R")
 
 # Jan - Dec
 cherryonfarm <- cherrygrowth(-10:10, 600, beta = 1, r = .3)
-cherryonfarm <- cherryonfarm + 1200
+# cherryonfarm <- cherryonfarm + 1200
 cherryonfarm[3:12] <- cherryonfarm[3:12] - 120
-lgf <- function(x) exp(x-6)/(1+exp(x-6)
-y = lgf(1:12)
-y <- y*15000
-y <- y + 1200
-y <- y - 100
-plot(x = 1:12, y = y)
+# lgf <- function(x) exp(x-6)/(1+exp(x-6)
+# y = lgf(1:12)
+# y <- y*15000
+# y <- y + 1200
+# y <- y - 100
+# plot(x = 1:12, y = y)
 
 cherryonfarm <- cherrygrowth(-10:10, 15000, beta = 1, r = .3)
-cherryonfarm <- cherrygrowth(-12:12, 15000, beta = 1, r = .3)
-cherryonfarm[1] <- cherryonfarm[1] + 1200
-cherryonfarm[9] <- cherryonfarm[9] - 4800
-cherryonfarm[10] <- cherryonfarm[10] - 7200 - 4800
-cherryonfarm[11] <- cherryonfarm[11] - 1800 - 7200 - 4800
-cherryonfarm[12] <- cherryonfarm[12]  - 1200 - 1800 - 7200 - 4800
-ggplot(NULL, aes(cherryonfarm, x = 1:12)) + geom_line() + xlab("Month") +
-   scale_x_continuous(breaks = 1:12) +
-  # geom_point(aes(x=1, y = 1200)) +
-   ylab("lbs. of cherry") + theme_tufte(base_size = 14) + 
-  # ylim(0, 16000) +
-   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
-   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-   ggtitle("Cherry Growth on 2-acre Farm from January to December \n Did not harvest in December")
-   # geom_label(NULL, aes(x = 8, y = -1, label = c("asdf")))
-
-
-geomc_herryonfarm <- cherryonfarm[3:12]
+# cherryonfarm <- cherrygrowth(-12:12, 15000, beta = 1, r = .3)
+# cherryonfarm[1] <- cherryonfarm[1] + 1200
+# cherryonfarm[9] <- cherryonfarm[9] - 4800
+# cherryonfarm[10] <- cherryonfarm[10] - 7200 - 4800
+# cherryonfarm[11] <- cherryonfarm[11] - 1800 - 7200 - 4800
+# cherryonfarm[12] <- cherryonfarm[12]  - 1200 - 1800 - 7200 - 4800
+# ggplot(NULL, aes(cherryonfarm, x = 1:12)) + geom_line() + xlab("Month") +
+#    scale_x_continuous(breaks = 1:12) +
+#   # geom_point(aes(x=1, y = 1200)) +
+#    ylab("lbs. of cherry") + theme_tufte(base_size = 14) + 
+#   # ylim(0, 16000) +
+#    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
+#    annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
+#    ggtitle("Cherry Growth on 2-acre Farm from January to December \n Did not harvest in December")
+#    # geom_label(NULL, aes(x = 8, y = -1, label = c("asdf")))
+# 
+# 
+# geomc_herryonfarm <- cherryonfarm[3:12]
 
 # Convert to field level
 #---------------------------------------
@@ -73,7 +73,7 @@ for (i in 1:9){
   
   # Calculate decision and infestation values
   #decsion_type <- "cost"
-  choice <- decision(acres, cost_s, cherryonfarm[i]*cv[4], nsp_mcListFit$estimate[[i]][], 
+  choice <- decision(acres, cost_s, cherryonfarm[i], nsp_mcListFit$estimate[[i]][], 
                      sp_mcListFit$estimate[[i]][], cv)
 
   # Get new current infestation values based on spray decision
@@ -119,42 +119,6 @@ for (i in 1:9){
   }
 }
 
-totalnb
-#totalnb <- round(totalnb, 2)
-# saveRDS(totalnb, "data/totalnb.rds")
-# totalnb
-# sum(totalnb$nb)
-# sum(totalnb$harvest_c)
-# 15000*harvestpercentages
-# totalnb$model <- "Economic Model"
-# totalnb$field_ablive <- totalnb$field_ablive*100
-# totalnb$field_abdead <- totalnb$field_abdead*100
-# totalnb$field_cd <- totalnb$field_cd*100
-# 
-# saveRDS(totalnb, "results/dynamicmodel.rds")
-# 
-# thold$Month <- 3:11
-# thold
-# 
-# ggplot(thold, aes(Month, CD_threshold*100)) + 
-#   geom_line(data = totalnb, aes(Month, field_cd*100), color = "red") +
-#   geom_line(linetype = "dashed") + 
-#   geom_point(data = filter(totalnb, spray == 1), aes(Month, field_cd*100)) +
-#   theme_tufte() +
-#   annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey") +
-#   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
-#   scale_x_continuous(breaks = 3:12) +
-#   scale_y_continuous(breaks = 0:12) +
-#   ylab("Field-level \n CD Infestation") +
-#   scale_colour_manual(name = 'the colour', 
-#          values =c('black'='black','red'='red'), labels = c('c2','c1')) +
-#   theme(legend.position = c(0,1), 
-#         legend.justification = c("left", "top"), 
-#         legend.box.background = element_rect(colour = "grey"), 
-#         legend.title = element_blank(), legend.key = element_blank())  +
-#   annotate("text", x = 4, y = 10, label = "Threshold") +
-#   annotate("text", x = 3.5, y = 5, label = "Farm Infestation", color = "red")
-#   
 
 totalnb
 sum(totalnb$nb)

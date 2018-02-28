@@ -39,7 +39,7 @@ markovcalibration <- function(dat){
   
   # Fit Markov Matrices to sequences
   #dat_mcListFit <- markovchainListFit(data = dat_tseq[,1:ncol(dat_tseq)], laplacian = 0)
-  dat_mcListFit <- markovchainListFit(data = dat_tseq[,1:ncol(dat_tseq)], laplacian = )
+  dat_mcListFit <- markovchainListFit(data = dat_tseq[,1:ncol(dat_tseq)], laplacian = 0)
   
   return(dat_mcListFit)
 }
