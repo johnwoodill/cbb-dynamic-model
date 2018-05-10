@@ -26,6 +26,8 @@ plot( acres*cherry_per_acre / (1 + beta * exp(-.5 * c(-10:10))))
 cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 2, r = .5)
 
 cherryonfarm <- cherryonfarm[3:12]
+cherryonfarm <- cherryonfarm - cumsum(totalnb$harvest_cherry)
+
 
 fieldcd <- dat3$C
 fieldablive <- dat3$A
@@ -40,9 +42,9 @@ p1 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line(data = NULL, aes(y = fieldablive*200, x = 3:12), color = "red") +
   geom_line(data = NULL, aes(y = fieldabdead*200, x = 3:12), color = "green") +
   geom_line(data = NULL, aes(y = fieldcd*200, x = 3:12), color = "orange") +
-    xlab(NULL) +
-  ylab("lbs. of mature cherry") + theme_tufte(base_size = 14) +
-    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
+  xlab(NULL) +
+  ylab("lbs. of Available Cherry") + theme_tufte(base_size = 14) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_y_continuous(sec.axis = sec_axis(~./200, name = "Field-level Infestation (%)")) +
   geom_vline(xintercept = 9, linetype = "dashed", color = "grey") +
@@ -51,7 +53,7 @@ p1 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   annotate("text", x = 4.5, y = 17500, label = "AB Live", color = "red") +
   annotate("text", x = 5.5, y = 17500, label = "AB Dead", color = "green") +
   annotate("text", x = 6.5, y = 17500, label = "CD", color = "orange") +
-  annotate("text", x = 11.5, y = 16000, label = "Mature Cherry", color = "black") +
+  annotate("text", x = 11.5, y = 16000, label = "Available Cherry", color = "black") +
   ggtitle("Always Spray Farm Infestation Levels") 
 p1
 
@@ -68,8 +70,8 @@ p2 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   geom_line(data = NULL, aes(y = nfieldablive*200, x = 3:12), color = "red") +
   geom_line(data = NULL, aes(y = nfieldabdead*200, x = 3:12), color = "green") +
   geom_line(data = NULL, aes(y = nfieldcd*200, x = 3:12), color = "orange") +
-  ylab("lbs. of mature cherry") + theme_tufte(base_size = 14) +
-    annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
+  ylab("lbs. of Available Cherry") + theme_tufte(base_size = 14) +
+  annotate("segment", x=-Inf, xend=Inf, y=-Inf, yend=-Inf, color = "grey")+
   annotate("segment", x=-Inf, xend=-Inf, y=-Inf, yend=Inf, color = "grey") +
   scale_y_continuous(sec.axis = sec_axis(~./200, name = "Field-level Infestation (%)")) +
   geom_vline(xintercept = 9, linetype = "dashed", color = "grey") +
@@ -77,11 +79,11 @@ p2 <- ggplot(NULL, aes(cherryonfarm, x = 3:12)) +
   # annotate("text", x = 4.5, y = 17500, label = "AB Live", color = "red") +
   # annotate("text", x = 5.5, y = 17500, label = "AB Dead", color = "green") +
   # annotate("text", x = 6.5, y = 17500, label = "CD", color = "orange") +
-    annotate("text", x = 11, y = 15500, label = "Mature Cherry", color = "black") +
+  annotate("text", x = 11, y = 15500, label = "Available Cherry", color = "black") +
   ggtitle("Never Spray Farm Infestation Levels")
 
 plot_grid(p1, p2, ncol = 1)
-
+ggsave("figures/calibrated_infestation_data.pdf", width = 6, height = 6)
 
 # Results from model
 

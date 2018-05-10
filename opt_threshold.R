@@ -167,7 +167,7 @@ ggplot(dat, aes(month, 100*CD)) + geom_line(linetype = "dashed") +
   annotate("text", x = 3.2, y = dat[1, 5]*100 + 3, label = "Farm-level \n Infestation") +
   annotate("text", x = 3, y = -1, label = "No Spray", alpha = 0.5, size = 3) +
   annotate("text", x = 4, y = -1, label = "No Spray", alpha = 0.5, size = 3) +
-  annotate("text", x = 5, y = -1, label = "Spray", alpha = 0.5, size = 3) +
+  annotate("text", x = 5, y = -1, label = "No Spray", alpha = 0.5, size = 3) +
   annotate("text", x = 6, y = -1, label = "Spray", alpha = 0.5, size = 3) +
   annotate("text", x = 7, y = -1, label = "Spray", alpha = 0.5, size = 3) +
   annotate("text", x = 8, y = -1, label = "Spray", alpha = 0.5, size = 3) +
