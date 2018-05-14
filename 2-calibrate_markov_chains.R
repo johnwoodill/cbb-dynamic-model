@@ -70,6 +70,7 @@ dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
 
 
 # Sent to Stuart and PingSun (2/28/18)
+# Confirmed with Stuart and PingSun as valid
 dat3 <- data.frame(A = c(12.18, 11.97, 9.50, 6.44, 5.22, 5.10, 3.64, 2.30, 1.66, 1.39), # A/B Live
                     B = c(3.62, 2.17, 1.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead
                     C = c(3.20, 2.46, 1.90, 1.35, 0.48, 2.46, 4.56, 5.19, 9.24, 11.18))    # C/D Position
@@ -88,11 +89,7 @@ dat4 <- data.frame(A = c(33.82, 30.22, 25.78, 22.20, 19.68, 15.50, 10.56, 7.32, 
 #                     B = c(1.43, 1.52, 0.33, 0.37, 1.64, 1.80, 0.48, 1.04, 0.56, 2.40),                # A/B Dead
 #                     C = c(10.75, 8.26, 7.89, 8.43, 15.68, 23.70, 32.96, 40.64, 47.84, 56))
 
-# Plot check
-# dat4$inf <- rowSums(dat4)
-# dat4$ninf <- 100-dat4$inf
-# dat4$month <- 3:12
-# dat4
+
 
 #   
 # inf <- rowSums(dat3)

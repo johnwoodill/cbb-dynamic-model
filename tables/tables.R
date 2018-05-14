@@ -8,6 +8,8 @@
 
  setwd("/run/media/john/1TB/SpiderOak/Projects/cbb-dynamic-model")
 
+ source("1-parameters.R")
+ 
   # Well-managed results
  dp <- read_csv("results/well_managed_main_results.csv")
  dp$spray_cost <- ifelse(dp$spray == 1, dp$spray, 0)
@@ -33,10 +35,36 @@
  pdp$field_abdead <- pdp$field_abdead*100
  pdp$field_cd <- pdp$field_cd*100
 
+# IPM Choice Well-managed
+ipm <- read.csv("results/ipmspray.csv", stringsAsFactors = FALSE)
+ipm$spray_cost <- ifelse(ipm$spray == 1, ipm$spray, 0)
+ipm$spray <- ifelse(ipm$spray == 0, "No Spray", "Spray")
+ipm$sum <- cumsum(ipm$nb)
+ipm$ab_live <- ipm$ab_live*100
+ipm$ab_dead <- ipm$ab_dead*100
+ipm$cd <- ipm$cd*100
+ipm$inf <- ipm$inf*100
+ipm$spray_cost <- ipm$spray_cost*-214
+ipm$harvest_cost <- ipm$harvest_c*cost_h
+ipm[, 6:ncol(ipm)] <- round(ipm[, 6:ncol(ipm)], 2)
+ipm
+
+# IPM Choice Well-managed
+pipm <- read.csv("results/pm_ipmspray.csv", stringsAsFactors = FALSE)
+pipm$spray_cost <- ifelse(pipm$spray == 1, pipm$spray, 0)
+pipm$spray <- ifelse(pipm$spray == 0, "No Spray", "Spray")
+pipm$sum <- cumsum(pipm$nb)
+pipm$ab_live <- pipm$ab_live*100
+pipm$ab_dead <- pipm$ab_dead*100
+pipm$cd <- pipm$cd*100
+pipm$inf <- pipm$inf*100
+pipm$spray_cost <- pipm$spray_cost*-214
+pipm$harvest_cost <- pipm$harvest_c*cost_h
+pipm[, 6:ncol(pipm)] <- round(pipm[, 6:ncol(pipm)], 2)
+pipm
 
 
-
- pdp[, 3:ncol(pdp)] <- round(pdp[, 3:ncol(pdp)], 2)
+pdp[, 3:ncol(pdp)] <- round(pdp[, 3:ncol(pdp)], 2)
 
 # Table 1 - Harvest Pricing per lbs of Cherry
 tab1 <- data.frame(`Infestation(CD)` = c("0-5%", "6-10%", "11-15%", "16-20%", "21-30%", "31-40%", "41-58%"),
@@ -55,12 +83,26 @@ tab3 <- select(dp, Month, spray, harvest_cherry, harvest_damage, harvest_cost, s
 # Table 4 - Well-managed Infestation Levels
 tab4 <- select(dp, Month, spray, field_ablive, field_abdead, field_cd, inf)
 tab4$inf <- tab4$inf*100 
+
 # Table 5 - Poorly Managed Results
 tab5 <- select(pdp, Month, spray, harvest_cherry, harvest_damage, harvest_cost, spray_cost, price, nb, sum)
  
 # Table 6 - Poorly-managed Infestation Levels
 tab6 <- select(pdp, Month, spray, field_ablive, field_abdead, field_cd, inf)
 tab6$inf <- tab6$inf*100
+
+# Table 7 - Well-managed Farm Results (IPM Choice)
+tab7 <- select(ipm, Month, spray, ab_live, ab_dead, cd, inf)
+
+# Table 8 - Well-Managed Results (IPM Choice)
+tab8 <- select(ipm, Month, spray, harvest_c, cd_damage, harvest_cost, spray_cost, price, nb, sum)
+
+# Table 9 - Poorly-managed Farm Results (IPM Choice)
+tab9 <- select(pipm, Month, spray, ab_live, ab_dead, cd, inf)
+
+# Table 10 - Poorly-Managed Results (IPM Choice)
+tab10 <- select(pipm, Month, spray, harvest_c, cd_damage, harvest_cost, spray_cost, price, nb, sum)
+
 
 # 
 # tab1 <- data.frame(Position = c("AB Live", "AB Dead", "CD", "Not Infested"),
@@ -88,11 +130,14 @@ tab6$inf <- tab6$inf*100
  
 stab1 <- stargazer(tab1, summary = FALSE, rownames = FALSE, title = "Harvest Pricing per lbs of Cherry")
 stab2 <- stargazer(tab2, summary = FALSE, rownames = FALSE, title = "Typical Farm Parameters")
-stab3 <- stargazer(tab3, summary = FALSE, rownames = FALSE, title = "Well-managed Main Results")
-stab4 <- stargazer(tab4, summary = FALSE, rownames = FALSE, title = "Well-managed Infestation Levels")
-stab5 <- stargazer(tab5, summary = FALSE, rownames = FALSE, title = "Poorly-managed Main results")
-stab6 <- stargazer(tab6, summary = FALSE, rownames = FALSE, title = "Poorly-managed Farm Infestation Levels")
-
+stab3 <- stargazer(tab3, summary = FALSE, rownames = FALSE, title = "Well-managed Main Results (Econ Model)")
+stab4 <- stargazer(tab4, summary = FALSE, rownames = FALSE, title = "Well-managed Infestation Levels (Econ Model)" )
+stab5 <- stargazer(tab5, summary = FALSE, rownames = FALSE, title = "Poorly-managed Main results (Econ Model)")
+stab6 <- stargazer(tab6, summary = FALSE, rownames = FALSE, title = "Poorly-managed Farm Infestation Levels (Econ Model)")
+stab7 <- stargazer(tab7, summary = FALSE, rownames = FALSE, title = "Well-managed Farm Results (IPM Choice)", digits = 2)
+stab8 <- stargazer(tab8, summary = FALSE, rownames = FALSE, title = "Well-managed Infestation Levels (IPM Choice)", digits = 2)
+stab9 <- stargazer(tab9, summary = FALSE, rownames = FALSE, title = "Poorly-managed Farm Results (IPM Choice)", digits = 2)
+stab10 <- stargazer(tab10, summary = FALSE, rownames = FALSE, title = "Poorly-managed Infestation Levels (IPM Choice)", digits = 2)
 
 
 # stab1 <- stargazer(tab1, summary = FALSE, rownames = FALSE, title = "Well-managed Farm Initial Infestation")
@@ -119,15 +164,15 @@ stab3 <- stab3[1:loc-1]
 heading <- paste("Month & Spray & Harvested  & Harvested & Harvested & Spray Cost & Price & Net-benefit & Net-benefit \\\\ ")
 heading2 <- paste(" &  &  Cherry & Damage & Cost & &  & & (Cum. Sum) \\\\ ")
 stab3 <- c(stab3, heading, heading2, stab3l)
-# stab3
-# 
+
 loc <- which(stab3 == "\\end{tabular} ")
 stab3 <- stab3[1:loc-1]
 stab3notes <- paste("\\parbox{6.3in}{Notes: Table reports main results from the dynamic programming model for a well-managed farm. }")
 stab3 <- c(stab3, "\\end{tabular}", centb, stab3notes, centc)
 stab3 <- c(stab3, "\\end{table}")
-# 
-# # Table 4
+
+ 
+# Table 4
 loc <- which(stab4 == "Month & spray & field\\_ablive & field\\_abdead & field\\_cd & inf \\\\ ")
 loc
 stab4l <- stab4[(loc+1):length(stab4)]
@@ -157,7 +202,7 @@ stab5
 
 loc <- which(stab5 == "\\end{tabular} ")
 stab5 <- stab5[1:loc-1]
-stab5notes <- paste("\\parbox{7in}{Notes:Table reports main results from the dynamic programming model for a poorly-managed farm. }")
+stab5notes <- paste("\\parbox{7in}{Notes: Table reports main results from the dynamic programming model for a poorly-managed farm. }")
 stab5 <- c(stab5, "\\end{tabular}", centb, stab5notes, centc)
 stab5 <- c(stab5, "\\end{table}")
 
@@ -168,7 +213,7 @@ loc
 stab6l <- stab6[(loc+1):length(stab6)]
 stab6 <- stab6[1:loc-1]
 
-heading <- paste("Month & Spray & AB live & AB Dead & CD & Infested \\\\ ")
+heading <- paste("Month & Spray & AB Live & AB Dead & CD & Infested \\\\ ")
 heading2 <- paste(" &  & (Field) & (Field) & (Field) & (Field) \\\\ ")
 stab6 <- c(stab6, heading, heading2, stab6l)
 stab6
@@ -178,6 +223,73 @@ stab6 <- stab6[1:loc-1]
 stab6notes <- paste("\\parbox{4in}{Notes: Table reports infestation level results from the dynamic programming model for a poorly-managed farm. }")
 stab6 <- c(stab6, "\\end{tabular}", centb, stab6notes, centc)
 stab6 <- c(stab6, "\\end{table}")
+
+# Table 7
+loc <- which(stab7 == "Month & spray & ab\\_live & ab\\_dead & cd & inf \\\\ ")
+loc
+stab7l <- stab7[(loc+1):length(stab7)]
+stab7 <- stab7[1:loc-1]
+
+heading <- paste("Month & Spray & AB Live & AB Dead & CD & Infested \\\\ ")
+heading2 <- paste(" &  & (Field) & (Field) & (Field) & (Field) \\\\ ")
+stab7 <- c(stab7, heading, heading2, stab7l)
+stab7
+
+loc <- which(stab7 == "\\end{tabular} ")
+stab7 <- stab7[1:loc-1]
+stab7notes <- paste("\\parbox{4in}{Notes: Table reports main results from the IPM Choice model for a well-managed farm. }")
+stab7 <- c(stab7, "\\end{tabular}", centb, stab7notes, centc)
+stab7 <- c(stab7, "\\end{table}")
+
+# Table 8
+loc <- which(stab8 == "Month & spray & harvest\\_c & cd\\_damage & harvest\\_cost & spray\\_cost & price & nb & sum \\\\ ")
+loc
+stab8l <- stab8[(loc+1):length(stab8)]
+stab8 <- stab8[1:loc-1]
+
+heading <- paste("Month & Spray & Harvested  & Harvested & Harvested & Spray Cost & Price & Net-benefit & Net-benefit \\\\ ")
+heading2 <- paste(" &  &  Cherry & Damage & Cost & &  & & (Cum. Sum) \\\\ ")
+stab8 <- c(stab8, heading, heading2, stab8l)
+
+loc <- which(stab8 == "\\end{tabular} ")
+stab8 <- stab8[1:loc-1]
+stab8notes <- paste("\\parbox{6.3in}{Notes: Table reports main results from the dynamic programming model for a well-managed farm. }")
+stab8 <- c(stab8, "\\end{tabular}", centb, stab8notes, centc)
+stab8 <- c(stab8, "\\end{table}")
+
+# Table 9
+loc <- which(stab9 == "Month & spray & ab\\_live & ab\\_dead & cd & inf \\\\ ")
+loc
+stab9l <- stab9[(loc+1):length(stab9)]
+stab9 <- stab9[1:loc-1]
+
+heading <- paste("Month & Spray & AB Live & AB Dead & CD & Infested \\\\ ")
+heading2 <- paste(" &  & (Field) & (Field) & (Field) & (Field) \\\\ ")
+stab9 <- c(stab9, heading, heading2, stab9l)
+stab9
+
+loc <- which(stab9 == "\\end{tabular} ")
+stab9 <- stab9[1:loc-1]
+stab9notes <- paste("\\parbox{4in}{Notes: Table reports main results from the IPM Choice model for a well-managed farm. }")
+stab9 <- c(stab9, "\\end{tabular}", centb, stab9notes, centc)
+stab9 <- c(stab9, "\\end{table}")
+
+# Table 10
+loc <- which(stab10 == "Month & spray & harvest\\_c & cd\\_damage & harvest\\_cost & spray\\_cost & price & nb & sum \\\\ ")
+loc
+stab10l <- stab10[(loc+1):length(stab10)]
+stab10 <- stab10[1:loc-1]
+
+heading <- paste("Month & Spray & Harvested  & Harvested & Harvested & Spray Cost & Price & Net-benefit & Net-benefit \\\\ ")
+heading2 <- paste(" &  &  Cherry & Damage & Cost & &  & & (Cum. Sum) \\\\ ")
+stab10 <- c(stab10, heading, heading2, stab10l)
+
+loc <- which(stab10 == "\\end{tabular} ")
+stab10 <- stab10[1:loc-1]
+stab10notes <- paste("\\parbox{6.3in}{Notes: Table reports main results from the dynamic programming model for a well-managed farm. }")
+stab10 <- c(stab10, "\\end{tabular}", centb, stab10notes, centc)
+stab10 <- c(stab10, "\\end{table}")
+
 
 
 setwd("/run/media/john/1TB/SpiderOak/Projects/cbb-dynamic-model/tables")
@@ -194,14 +306,20 @@ cat("\\newpage", file = "tables.tex", append = TRUE)
 cat(stab5, file = "tables.tex", sep = "\n", append = TRUE)
 cat("\\newpage", file = "tables.tex", append = TRUE)
 cat(stab6, file = "tables.tex", sep = "\n", append = TRUE)
-# cat("\\newpage", file = "tables.tex", append = TRUE)
-# cat(stab7, file = "tables.tex", sep = "\n", append = TRUE)
-# cat("\\newpage", file = "tables.tex", append = TRUE)
-# cat(stab8, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "tables.tex", append = TRUE)
+cat(stab7, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "tables.tex", append = TRUE)
+cat(stab8, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "tables.tex", append = TRUE)
+cat(stab9, file = "tables.tex", sep = "\n", append = TRUE)
+cat("\\newpage", file = "tables.tex", append = TRUE)
+cat(stab10, file = "tables.tex", sep = "\n", append = TRUE)
 cat("\\end{document}", file = "tables.tex", append = TRUE)
+
 # Compile pdf
 system("pdflatex tables.tex")
 
 }
 
 
+setwd("/run/media/john/1TB/SpiderOak/Projects/cbb-dynamic-model")

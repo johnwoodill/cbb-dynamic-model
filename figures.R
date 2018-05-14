@@ -26,7 +26,7 @@ plot( acres*cherry_per_acre / (1 + beta * exp(-.5 * c(-10:10))))
 cherryonfarm <- cherrygrowth(-10:10, acres*cherry_per_acre, beta = 2, r = .5)
 
 cherryonfarm <- cherryonfarm[3:12]
-cherryonfarm <- cherryonfarm - cumsum(totalnb$harvest_cherry)
+cherryonfarm <- cherryonfarm - lag(cumsum(totalnb$harvest_cherry), 1)
 
 
 fieldcd <- dat3$C
