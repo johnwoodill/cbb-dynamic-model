@@ -141,6 +141,7 @@ for (i in 1:9){
   
   if (i == 9){
       choice <- 0
+      # cv <- choice * (cv %*% sp_mcListFit$estimate[[i]][]) + ((1 - choice) * (cv %*% nsp_mcListFit$estimate[[i]][]))
       nb <- maxnb(p = p, 
             cost_s = cost_s*acres, 
             cost_h = cost_h, 

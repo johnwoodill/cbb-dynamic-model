@@ -25,31 +25,31 @@ source("R/markovcalibration.R")
 # # Original matrices
 # # Based on field level data from Luis
 # # Spray calibration
-dat1 <- data.frame(month = 3:12,
-                   A = c(58, 69, 70, 48, 22, 5, 16, 10, 5, 3 ),      # A/B Live
-                   B = rep(0, 1),                                    # A/B Dead
-                   C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
-                  INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
-dat1$NI <- 100 - dat1$INF
-dat1$B <- 100-(dat1$A+dat1$C)
-
-# No spray calibration (From luis)
-# Dissect level
-dat2 <- data.frame(month = 3:12,
-                   A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
-                   B = rep(0, 10),                                    # A/B Dead
-                   C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
-                  INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
-dat2$B <- 100-(dat2$A+dat2$C)
-dat2$NI <- 100 - dat2$INF
-
-dat3 <- data.frame(A = (dat1$A*dat1$INF)/100,
-                   B = (dat1$B*dat1$INF)/100,
-                   C = (dat1$C*dat1$INF)/100)
-
-dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
-                   B = (dat2$B*dat2$INF)/100,
-                   C = (dat2$C*dat2$INF)/100)
+# dat1 <- data.frame(month = 3:12,
+#                    A = c(58, 69, 70, 48, 22, 5, 16, 10, 5, 3 ),      # A/B Live
+#                    B = rep(0, 1),                                    # A/B Dead
+#                    C = c(20, 22, 24, 45, 48, 73, 64, 73, 84, 86),    # C/D Position
+#                   INF = c(21, 13, 5, 3, 1, 2, 4, 3, 11, 13))
+# dat1$NI <- 100 - dat1$INF
+# dat1$B <- 100-(dat1$A+dat1$C)
+# 
+# # No spray calibration (From luis)
+# # Dissect level
+# dat2 <- data.frame(month = 3:12,
+#                    A = c(74, 69, 66, 60, 48, 30, 22, 16, 10, 3),      # A/B Live
+#                    B = rep(0, 10),                                    # A/B Dead
+#                    C = c(25, 27, 33, 39, 48, 66, 77, 82, 89, 93),     # C/D Position
+#                   INF = c(43, 38, 33, 40, 44, 48, 53, 59, 66, 80))
+# dat2$B <- 100-(dat2$A+dat2$C)
+# dat2$NI <- 100 - dat2$INF
+# 
+# dat3 <- data.frame(A = (dat1$A*dat1$INF)/100,
+#                    B = (dat1$B*dat1$INF)/100,
+#                    C = (dat1$C*dat1$INF)/100)
+# 
+# dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
+#                    B = (dat2$B*dat2$INF)/100,
+#                    C = (dat2$C*dat2$INF)/100)
 # dat3$D <- rowSums(dat3)
 # names(dat3) <- c("AB_LIVE", "AB_DEAD", "CD", "INF")
 # 
@@ -73,12 +73,12 @@ dat4 <- data.frame(A = (dat2$A*dat2$INF)/100,
 # Confirmed with Stuart and PingSun as valid
 dat3 <- data.frame(A = c(12.18, 11.97, 9.50, 6.44, 5.22, 5.10, 3.64, 2.30, 1.66, 1.39), # A/B Live
                     B = c(3.62, 2.17, 1.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead
-                    C = c(3.20, 2.46, 1.90, 1.35, 0.48, 2.46, 4.56, 5.19, 9.24, 11.18))    # C/D Position
+                    C = c(3.20, 2.46, 1.90, 1.35, 1.48, 2.46, 4.56, 5.19, 9.24, 11.18))    # C/D Position
 
 
 dat4 <- data.frame(A = c(33.82, 30.22, 25.78, 22.20, 19.68, 15.50, 10.56, 7.32, 5.60, 3.80),      # A/B Live
                     B = c(0.43, 1.52, 0.33, 0.37, 1.64, 1.80, 0.48, 1.04, 0.56, 2.40),                # A/B Dead
-                    C = c(10.75, 8.26, 6.89, 9.43, 15.68, 23.70, 32.96, 40.64, 47.84, 56))
+                    C = c(12.75, 10.26, 9.89, 10.43, 15.68, 23.70, 32.96, 40.64, 47.84, 56))
 
 # dat3 <- data.frame(A = c(12.18, 11.97, 9.50, 6.44, 5.22, 5.10, 3.64, 2.30, 1.66, 1.39), # A/B Live
 #                     B = c(3.62, 2.17, 1.30, 1.61, 1.30, 0.44, 0.80, 0.51, 1.10, 1.43),     # A/B Dead

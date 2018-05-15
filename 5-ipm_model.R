@@ -46,7 +46,6 @@ cost_s <- 214
 
 cv <- c(0.055, 0.025, .03)
 cv[4] <- 1 - sum(cv)
-new_cv <- cv
 
 
 # Followed IPM
