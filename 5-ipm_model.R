@@ -113,11 +113,11 @@ for (i in 1:9){
   mat$dissect_ab_live[i] <- ((mat[i, 2]/mat$inf[i])) 
   
   mat$spray[i] <- choice
-  mat$price[i] <- cherrypricing(mat$cd[i]/100)
+  mat$price[i] <- cherrypricing(mat$cd[i])
   mat$harvest_s[i] <- harvestschedule[i]
   mat$harvest_c[i] <- cherry_per_acre*acres*harvestpercentages[i]
   mat$cd_damage[i] <- mat$harvest_s[i]*(mat$cd[i])*harvestpercentages[i]*cherry_per_acre*acres
-  mat$nb[i] <- (mat$harvest_c[i] - mat$cd_damage[i])*mat$price[i] - mat$spray[i]*cost_s - cost_h*mat$harvest_c[i]
+  mat$nb[i] <- (mat$harvest_c[i])*mat$price[i] - mat$spray[i]*cost_s - cost_h*mat$harvest_c[i]
   
   if (i == 9){
     mat$chart[i+1] <- ((mat[i, 2]/mat$inf[i])) * mat$inf[i] * 100
@@ -128,18 +128,18 @@ for (i in 1:9){
     mat$cd[i+1] <- (cv[3])
     mat$spray[i+1] <- choice
     
-    mat$price[i+1] <- cherrypricing(mat$cd[i]/100)
+    mat$price[i+1] <- cherrypricing(mat$cd[i])
     mat$harvest_s[i+1] <- harvestschedule[i+1]
     mat$harvest_c[i+1] <- cherry_per_acre*acres*harvestpercentages[i+1]
     mat$cd_damage[i+1] <- mat$harvest_s[i+1]*(mat$cd[i+1])*harvestpercentages[i+1]*cherry_per_acre*acres
-    mat$nb[i+1] <- (mat$harvest_c[i+1] - mat$cd_damage[i+1])*mat$price[i+1] - mat$spray[i+1]*cost_s - cost_h*mat$harvest_c[i+1]
+    mat$nb[i+1] <- (mat$harvest_c[i+1])*mat$price[i+1] - mat$spray[i+1]*cost_s - cost_h*mat$harvest_c[i+1]
 
   }
 }
 
 mat
 
-# sum(mat$nb)
+sum(mat$nb)
 
 # mat$model <- "IPM Choice"
 write_csv(mat, "results/ipmspray.csv")

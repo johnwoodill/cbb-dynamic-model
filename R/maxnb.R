@@ -31,16 +31,17 @@
 maxnb <- function(p, cost_s, cost_h, h, cherryforharvest, cherry_on_farm, harvestedcherry, cv, d, i){
   # Determine optimal level of cherry harvest (%)
   harvest_check <- c(0, 0)     # c(nb, harvest %)
-  if(cv[3] < 0.25){
+  # if(cv[3] < 0.25){
   for (j in unique(seq(0, (cherryforharvest), 1))){
     check <- p * (j * (1 - cv[3])) - cost_s*choice - cost_h*(j)   
     harvest_check[1] <- ifelse(check >= harvest_check[1], check, harvest_check[1])
     harvest_check[2] <- ifelse(check >= harvest_check[1], j, harvest_check[2])
-  }}
+  # }
+  }
   
   harvested <- (harvest_check[2]) * (1 - cv[3]) - harvestedcherry
-  nb <- h * p * (harvest_check[2]) * (1 - cv[3]) - cost_s*choice - h * cost_h * (harvest_check[2])
-  
+  # nb <- (h * p * (harvest_check[2]) * (1 - cv[3])) - (cost_s * choice) - (h * cost_h * (harvest_check[2]))
+  nb <- (h * p * (harvest_check[2])) - (cost_s * choice) - (h * cost_h * (harvest_check[2]))
   nsp_damage <- 0
   
   # Calculate no spray damage from decision.R

@@ -1,12 +1,10 @@
-#' 
-#' 
-#' 
 library(ggplot2)
 library(cowplot)
 library(dplyr)
 library(tidyr)
 library(cowplot)
 library(scales)
+library(ggthemes)
 
 #' Run model
 source("3-dynamic_economic_model.R")
@@ -217,16 +215,18 @@ dat3 <- read_csv("results/ipmspray.csv")
 dat4 <- read_csv("results/pm_ipmspray.csv")
 dat5 <- read_csv("results/alwaysspray.csv")
 dat6 <- read_csv("results/neverspray.csv")
+dat7 <- read_csv("results/pm_alwaysspray.csv")
+dat8 <- read_csv("results/pm_neverspray.csv")
 
 dat <- data.frame(model = rep(c("Economic Model", "IPM Choice", "Always Spray", "Never Spray"), 1,  each = 4),
-                  variable = rep(c("Final Net-benefit ($)", "Marketable Cherry (Lbs.)", "Final CD (%)", "CD Damage ($)"), 4),
-                  value = c(sum(dat1$nb), sum(dat1$harvest_cherry - dat1$harvest_damage), dat1$field_cd[10]*100, sum(dat1$harvest_damage*dat1$price),
-                            sum(dat3$nb), sum(dat3$harvest_c - dat3$cd_damage), dat3$cd[10]*100, sum(dat3$cd_damage*dat3$price),
-                            sum(dat5$nb), sum(dat5$harvest_c - dat5$cd_damage), dat5$cd[10]*100, sum(dat5$cd_damage*dat5$price),
-                            sum(dat6$nb), sum(dat6$harvest_c - dat6$cd_damage), dat6$cd[10]*100, sum(dat6$cd_damage*dat6$price)))
+                  variable = rep(c("Final Net-benefit ($)", "Marketable Cherry (Lbs.)", "Final CD (%)", "CD Damage (Lbs.)"), 4),
+                  value = c(sum(dat1$nb), sum(dat1$harvest_cherry - dat1$harvest_damage), dat1$field_cd[10]*100, sum(dat1$harvest_damage),
+                            sum(dat3$nb), sum(dat3$harvest_c - dat3$cd_damage), dat3$cd[10]*100, sum(dat3$cd_damage),
+                            sum(dat5$nb), sum(dat5$harvest_c - dat5$cd_damage), dat5$cd[10]*100, sum(dat5$cd_damage),
+                            sum(dat6$nb), sum(dat6$harvest_c - dat6$cd_damage), dat6$cd[10]*100, sum(dat6$cd_damage)))
 
 dat$model <- factor(dat$model, levels = c("Never Spray", "Always Spray",  "IPM Choice", "Economic Model"))
-dat$variable <- factor(dat$variable, levels = c("Final CD (%)", "Marketable Cherry (Lbs.)", "CD Damage ($)", "Final Net-benefit ($)"))
+dat$variable <- factor(dat$variable, levels = c("Final CD (%)", "Marketable Cherry (Lbs.)", "CD Damage (Lbs.)", "Final Net-benefit ($)"))
 
 ggplot(dat, aes(x = factor(model), y = value)) + 
   geom_bar(stat = "identity", width = .75) + 
@@ -246,14 +246,14 @@ ggsave("figures/final_plot_well_managed.pdf", width = 6, height = 4)
 
 
 dat <- data.frame(model = rep(c("Economic Model", "IPM Choice", "Always Spray", "Never Spray"), 1,  each = 4),
-                  variable = rep(c("Final Net-benefit ($)", "Marketable Cherry (Lbs.)", "Final CD (%)", "CD Damage ($)"), 4),
-                  value = c(sum(dat2$nb), sum(dat2$harvest_cherry - dat2$harvest_damage), dat2$field_cd[10]*100, sum(dat2$harvest_damage*dat2$price),
-                            sum(dat4$nb), sum(dat4$harvest_c - dat4$cd_damage), dat4$cd[10]*100, sum(dat4$cd_damage*dat4$price),
-                            sum(dat5$nb), sum(dat5$harvest_c - dat5$cd_damage), dat5$cd[10]*100, sum(dat5$cd_damage*dat5$price),
-                            sum(dat6$nb), sum(dat6$harvest_c - dat6$cd_damage), dat6$cd[10]*100, sum(dat6$cd_damage*dat6$price)))
+                  variable = rep(c("Final Net-benefit ($)", "Marketable Cherry (Lbs.)", "Final CD (%)", "CD Damage (Lbs.)"), 4),
+                  value = c(sum(dat2$nb), sum(dat2$harvest_cherry - dat2$harvest_damage), dat2$field_cd[10]*100, sum(dat2$harvest_damage),
+                            sum(dat4$nb), sum(dat4$harvest_c - dat4$cd_damage), dat4$cd[10]*100, sum(dat4$cd_damage),
+                            sum(dat7$nb), sum(dat7$harvest_c - dat7$cd_damage), dat7$cd[10]*100, sum(dat7$cd_damage),
+                            sum(dat8$nb), sum(dat8$harvest_c - dat8$cd_damage), dat8$cd[10]*100, sum(dat8$cd_damage)))
 
 dat$model <- factor(dat$model, levels = c("Never Spray", "Always Spray",  "IPM Choice", "Economic Model"))
-dat$variable <- factor(dat$variable, levels = c("Final CD (%)", "Marketable Cherry (Lbs.)", "CD Damage ($)", "Final Net-benefit ($)"))
+dat$variable <- factor(dat$variable, levels = c("Final CD (%)", "Marketable Cherry (Lbs.)", "CD Damage (Lbs.)", "Final Net-benefit ($)"))
 
 ggplot(dat, aes(x = factor(model), y = value)) + 
   geom_bar(stat = "identity", width = .75) + 
