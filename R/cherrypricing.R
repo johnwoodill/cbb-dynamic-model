@@ -37,3 +37,5 @@ cherrypricing <- function(x){
   if (x > 0.60) return(0)
 }
 
+
+
